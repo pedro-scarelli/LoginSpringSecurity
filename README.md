@@ -31,15 +31,15 @@ token=$(curl -X POST http://localhost:8080/login -H 'Content-Type: application/j
 curl -X GET http://localhost:8080/users -H "Authorization: Bearer $token" | jq '.'
 
 ### Obter Usuário
-curl -X GET http://localhost:8080/users/<login do usuario retornado ao obter todos os usuarios> -H "Authorization: Bearer $token" | jq '.'
+curl -X GET http://localhost:8080/users/iloginUsuarioAqui -H "Authorization: Bearer $token" | jq '.'
 
 ### Atualizar Usuário
-curl -X PUT http://localhost:8080/editUser/<id do usuario a ser atualizado aqui>  -H 'Content-Type: application/json' -H "Authorization: Bearer $token" -d '{ "name": "exampleUserUpdated", "mail": "update@example.com", "login": "exampleUpdate", "password": "newPassword" }'
+curl -X PUT http://localhost:8080/editUser/idUsuariosAqui  -H 'Content-Type: application/json' -H "Authorization: Bearer $token" -d '{ "name": "exampleUserUpdated", "mail": "update@example.com", "login": "exampleUpdate", "password": "newPassword" }'
 
 - Se você atualizar o usuário com que fez login precisara fazer o login denovo.
 
 ### Excluir Usuário
-curl -X DELETE http://localhost:8080/deleteUser/<insira um id retornado pelo obter todos os usuarios aqui> -H "Authorization: Bearer $token"
+curl -X DELETE http://localhost:8080/deleteUser/idUsuariosAqui -H "Authorization: Bearer $token"
 
 ### Excluir Todos os Usuários
 curl -X DELETE http://localhost:8080/deleteAllUsers -H "Authorization: Bearer $token"
