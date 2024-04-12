@@ -1,22 +1,15 @@
 # Aplicativo de Gerenciamento de Usuários
-Este é um aplicativo web de gerenciamento de usuários desenvolvido usando Spring Boot e Docker.
+Aplicativo web de gerenciamento de usuários desenvolvido usando Spring Boot, Spring Security e Docker.
 
 ## Instruções de Configuração
 
 ### Pré-requisitos
-- Spring 3.2.0
 - Docker
 - Docker Compose
-- JDK 17
-
-### Configuração do Banco de Dados
-1. Certifique-se de ter o docker compose rodando, e que sua conta esteja logada.
-2. Abra o arquivo `docker-compose.yml` no diretório raiz do projeto e verifique a configuração do banco de dados.
-3. Execute o comando `docker-compose up -d` no terminal para iniciar o banco de dados e o FlywayDB.
 
 ### Inicialização do Servidor Backend
-1. Navegue até o arquivo `UserApplication.java`.
-2. Execute o aplicativo clicando em "run" na sua IDE.
+1. No terminal navegue até a pasta User/user
+2. Execute o comando `docker-compose up` para iniciar a api.
 3. Se a porta 8080 não estiver disponível ele vai iniciar em outra porta.
 
 ### Acesso ao Aplicativo
@@ -24,41 +17,32 @@ Este é um aplicativo web de gerenciamento de usuários desenvolvido usando Spri
 2. Rode o arquivo `index.html` da pasta `front` na sua IDE.
 3. Configure o CORS para a porta em que o front-end está sendo executado.
 4. Rode o arquivo `index.html` novamente para acessar o aplicativo.
-5. Faça o registro e, em seguida, o login para ver todos os usuários.
+5. Faça o registro e em seguida o login para ver todos os usuários.
 
 ## Documentação da API
 
 ### Registro de Usuário
-curl -X POST \
-http://localhost:8080/register \
--H 'Content-Type: application/json' \
--d '{ "name": "exampleUser", "mail": "user@example.com", "login": "exampleUser", "password": "password123" }'
+curl -X POST http://localhost:8080/register -H 'Content-Type: application/json' -d '{ "name": "exampleUser", "mail": "user@example.com", "login": "exampleUser", "password": "password123" }'
 
-### Login de Usuário
-curl -X POST \
-http://localhost:8080/login \
--H 'Content-Type: application/json' \
--d '{ "login": "exampleUser", "password": "password123" }'
+### Login de Usuário e Obtenção do token
+token=$(curl -X POST http://localhost:8080/login -H 'Content-Type: application/json' -d '{ "login": "exampleUser", "password": "password123" }' | jq -r '.token')
+
+### Obter Todos os Usuários
+curl -X GET http://localhost:8080/users -H "Authorization: Bearer $token" | jq '.'
 
 ### Obter Usuário
-curl -X GET http://localhost:8080/users/{id}
-Escolha Token Bearer como meio de autenticação E Insira o token devolvido no JSON ao efetuar o método login
-
-#### Obter Todos os Usuários
-curl -X GET http://localhost:8080/api/users
-Escolha Token Bearer como meio de autenticação E Insira o token devolvido no JSON ao efetuar o método login
+curl -X GET http://localhost:8080/users/<login do usuario retornado ao obter todos os usuarios> -H "Authorization: Bearer $token" | jq '.'
 
 ### Atualizar Usuário
-curl -X PUT
-http://localhost:8080/api/users/{id}
--H 'Content-Type: application/json'
--d '{ "name": "exampleUser", "mail": "user@example.com", "login": "exampleUser", "password": "password123" }'
-Escolha Token Bearer como meio de autenticação E Insira o token devolvido no JSON ao efetuar o método login
+curl -X PUT http://localhost:8080/editUser/<id do usuario a ser atualizado aqui>  -H 'Content-Type: application/json' -H "Authorization: Bearer $token" -d '{ "name": "exampleUserUpdated", "mail": "update@example.com", "login": "exampleUpdate", "password": "newPassword" }'
+
+- Se você atualizar o usuário com que fez login precisara fazer o login denovo.
 
 ### Excluir Usuário
-curl -X DELETE http://localhost:8080/deleteUser/{id}
-Escolha Token Bearer como meio de autenticação E Insira o token devolvido no JSON ao efetuar o método login
+curl -X DELETE http://localhost:8080/deleteUser/<insira um id retornado pelo obter todos os usuarios aqui> -H "Authorization: Bearer $token"
 
 ### Excluir Todos os Usuários
-curl -X DELETE http://localhost:8080/deleteAllUsers
-Escolha Token Bearer como meio de autenticação E Insira o token devolvido no JSON ao efetuar o método login
+curl -X DELETE http://localhost:8080/deleteAllUsers -H "Authorization: Bearer $token"
+
+- Depois de excluir todos os usuários o token atual não funcionará mais
+- Será necessário cadastrar outro usuário e usar o novo token para verificar que os usuários anteriores foram deletados
