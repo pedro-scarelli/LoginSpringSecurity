@@ -1,8 +1,8 @@
 com/login/user/services/AuthUserService.class
-com/login/user/domain/models/UserRole.class
 com/login/user/config/SecurityFilter.class
 com/login/user/domain/exceptions/UserNotFoundException.class
 com/login/user/controllers/UserController.class
+com/login/user/domain/models/UserRoleConverter.class
 com/login/user/domain/models/User.class
 com/login/user/domain/dtos/UserDto.class
 com/login/user/repositories/UsersRepository.class

@@ -4,7 +4,6 @@ import com.login.user.domain.dtos.UserDto;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
-import com.login.user.domain.models.UserRole;
 import com.login.user.repositories.UsersRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class UserService implements UserDetailsService {
 
         String hashedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(hashedPassword);
-        user.setRole(UserRole.ADMIN);
+        
         usersRepository.save(user);
         return userDto;
     }
@@ -84,7 +83,7 @@ public class UserService implements UserDetailsService {
             BeanUtils.copyProperties(userDto, user);
             String hashedPassword = encodePassword(user.getPassword());
             user.setPassword(hashedPassword);
-            user.setRole(UserRole.ADMIN);
+            
             usersRepository.save(user);
             return userDto;
         }

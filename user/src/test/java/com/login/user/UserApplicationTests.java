@@ -4,7 +4,6 @@ import com.login.user.domain.dtos.UserDto;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
-import com.login.user.domain.models.UserRole;
 import com.login.user.repositories.UsersRepository;
 import com.login.user.services.UserService;
 
@@ -45,7 +44,6 @@ class UserServiceTest {
         user.setMail("john@example.com");
         user.setLogin("login");
         user.setPassword("password");
-        user.setRole(UserRole.ADMIN);
     
         when(usersRepository.findByLogin(user.getUsername())).thenReturn(user);
     
@@ -90,7 +88,7 @@ class UserServiceTest {
         user.setMail(userDto.mail());
 		user.setLogin(userDto.login());
         user.setPassword(new BCryptPasswordEncoder().encode(userDto.password()));
-        user.setRole(UserRole.ADMIN);
+
 
         when(usersRepository.findByMail(userDto.mail())).thenReturn(null);
         when(usersRepository.save(any(User.class))).thenReturn(user);
@@ -185,7 +183,6 @@ class UserServiceTest {
         user.setMail(mail);
         user.setLogin(login);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
-        user.setRole(UserRole.ADMIN);
         return user;
     }
 }
