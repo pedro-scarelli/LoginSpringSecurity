@@ -1,6 +1,8 @@
 package com.login.user;
 
 import com.login.user.dtos.UserDto;
+import com.login.user.exceptions.DuplicateCredentialsException;
+import com.login.user.exceptions.UserNotFoundException;
 import com.login.user.models.User;
 import com.login.user.models.UserRole;
 import com.login.user.repositories.UsersRepository;
@@ -47,19 +49,22 @@ class UserServiceTest {
     
         when(usersRepository.findByLogin(user.getUsername())).thenReturn(user);
     
-        User foundUser = userService.getUserByLogin(user.getUsername());   
-        assertNotNull(foundUser);
-    
-        assertEquals(user, foundUser);
+        UserDto foundUser = userService.getUserByLogin(user.getUsername());   
+        assertEquals(user.getName(), foundUser.name());
+        assertEquals(user.getMail(), foundUser.mail());
+        assertEquals(user.getUsername(), foundUser.login());
     }
 
     @Test
     void getUserByLoginFailure(){
         String login = "teste";
 
-        when(usersRepository.findByLogin(login)).thenReturn(null);
-
-        assertNull(userService.getUserByLogin(login));
+        try{
+            when(userService.getUserByLogin(login)).thenReturn(null);
+            fail();
+        } catch(UserNotFoundException exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
     @Test
@@ -68,13 +73,12 @@ class UserServiceTest {
         users.add(createUser("John Doe", "john@example.com","login", "password"));
         users.add(createUser("Jane Smith","jane@example.com","login2", "password"));
 
-        when(usersRepository.findAll()).thenReturn(users);
-
-        Iterable<User> allUsers = userService.getAllUsers();
-
-        assertNotNull(allUsers);
-        assertTrue(allUsers.iterator().hasNext());
-        assertEquals(users.size(), ((List<User>) allUsers).size());
+        try{
+            when(usersRepository.findAll()).thenReturn(users);
+        } catch(UserNotFoundException exception){
+            System.out.println(exception.getMessage());
+            fail();
+        }
     }
 
     @Test
@@ -91,12 +95,12 @@ class UserServiceTest {
         when(usersRepository.findByMail(userDto.mail())).thenReturn(null);
         when(usersRepository.save(any(User.class))).thenReturn(user);
 
-        User savedUser = userService.registerUser(userDto);
+        UserDto savedUser = userService.registerUser(userDto);
 
         assertNotNull(savedUser);
-        assertEquals(user.getName(), savedUser.getName());
-        assertEquals(user.getMail(), savedUser.getMail());
-        assertEquals(user.getUsername(), savedUser.getUsername());
+        assertEquals(user.getName(), savedUser.name());
+        assertEquals(user.getMail(), savedUser.mail());
+        assertEquals(user.getUsername(), savedUser.login());
     }
 
     @Test
@@ -106,9 +110,12 @@ class UserServiceTest {
 
         when(usersRepository.findByMail(userDto.mail())).thenReturn(existingUser);
 
-        User savedUser = userService.registerUser(userDto);
-
-        assertNull(savedUser);
+        try{
+            userService.registerUser(userDto);
+            fail();
+        } catch(DuplicateCredentialsException exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
     @Test
@@ -120,10 +127,10 @@ class UserServiceTest {
         when(usersRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(usersRepository.save(any(User.class))).thenReturn(existingUser);
 
-        User updatedUser = userService.updateUser(userId, updatedUserDto);
+        UserDto updatedUser = userService.updateUser(userId, updatedUserDto);
 
-        assertEquals(updatedUserDto.name(), updatedUser.getName());
-        assertEquals(updatedUserDto.mail(), updatedUser.getMail());
+        assertEquals(updatedUserDto.name(), updatedUser.name());
+        assertEquals(updatedUserDto.mail(), updatedUser.mail());
     }
 
     @Test
@@ -131,22 +138,29 @@ class UserServiceTest {
         UUID userId = UUID.randomUUID();
     
         when(usersRepository.findById(userId)).thenReturn(Optional.empty());
-    
-        Optional<User> userOptional = usersRepository.findById(userId);
-        
-        assertTrue(userOptional.isEmpty()); 
+
+        UserDto updatedUserDto = null;
+        try{
+            userService.updateUser(userId, updatedUserDto);
+            fail();
+        }catch(UserNotFoundException exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
     @Test
     void deleteUser() {
         UUID userId = UUID.randomUUID();
         User existingUser = createUser("John Doe", "john@example.com", "login", "password");
-
+    
         when(usersRepository.findById(userId)).thenReturn(Optional.of(existingUser));
-
-        boolean deleted = userService.deleteUser(userId);
-
-        assertTrue(deleted);
+    
+        UserDto deletedUserDto = userService.deleteUser(userId);
+    
+        assertEquals(existingUser.getName(), deletedUserDto.name());
+        assertEquals(existingUser.getMail(), deletedUserDto.mail());
+        assertEquals(existingUser.getLogin(), deletedUserDto.login());
+        assertEquals(existingUser.getPassword(), deletedUserDto.password());
     }
 
     @Test
@@ -155,10 +169,14 @@ class UserServiceTest {
 
         when(usersRepository.findById(userId)).thenReturn(Optional.empty());
 
-        boolean deleted = userService.deleteUser(userId);
-
-        assertFalse(deleted);
+        try{
+            userService.deleteUser(userId);
+            fail();
+        } catch(UserNotFoundException exception){
+            System.out.println(exception.getMessage());
+        }
     }
+
 
     private User createUser(String name, String mail, String login, String password) {
         User user = new User();

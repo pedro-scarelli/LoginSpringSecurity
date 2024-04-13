@@ -1,5 +1,7 @@
+/home/pvscarelli/Documents/User/user/src/main/java/com/login/user/exceptions/UserNotFoundException.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/security/SecurityFilter.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/repositories/UsersRepository.java
+/home/pvscarelli/Documents/User/user/src/main/java/com/login/user/infra/RestExceptionHandler.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/security/SecurityConfig.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/dtos/UserDto.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/models/UserRole.java
@@ -7,6 +9,7 @@
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/services/TokenService.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/controllers/UserController.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/dtos/LoginResponseDto.java
+/home/pvscarelli/Documents/User/user/src/main/java/com/login/user/exceptions/DuplicateCredentialsException.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/UserApplication.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/services/UserService.java
 /home/pvscarelli/Documents/User/user/src/main/java/com/login/user/WebConfig.java

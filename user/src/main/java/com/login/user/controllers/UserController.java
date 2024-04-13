@@ -13,14 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -42,10 +41,6 @@ public class UserController {
     })
     @GetMapping("/users")
     public ResponseEntity<Object> getAllUsers() {
-        Iterable<User> users = userService.getAllUsers();
-        if(users == null){
-            return ResponseEntity.badRequest().body("Não encontrou nenhum usuário.");
-        }
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
@@ -55,12 +50,9 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
     @GetMapping("/users/{login}")
-    public ResponseEntity<User> getUser(@PathVariable String login) {
-        User user = userService.getUserByLogin(login);
-        if(user != null){
-            return ResponseEntity.ok(user);
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<UserDto> getUser(@PathVariable String login) {
+        UserDto userDto = userService.getUserByLogin(login);
+        return ResponseEntity.ok(userDto);
     }
 
     @Operation(description = "Faz o registro de um usuário no banco de dados")
@@ -74,14 +66,9 @@ public class UserController {
             return ResponseEntity.badRequest().body(validationErrors(result));
         }
 
-        User savedUser = userService.registerUser(userDto);
-        if(savedUser != null){
-            return ResponseEntity.ok().body("Usuário cadastrado com sucesso!");
-        } else {
-            Map<String, String> responseBody = new HashMap<>();
-            responseBody.put("error", "E-mail ou login duplicado.");
-            return ResponseEntity.badRequest().body(responseBody);
-        }
+        userService.registerUser(userDto);
+
+        return ResponseEntity.ok().body(userDto);
     }
 
     @Operation(description = "Faz o login do usuário com login e autenticação da senha")
@@ -91,13 +78,11 @@ public class UserController {
     })
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid AuthenticationDto data) {
-        User user = authUser.authenticateLogin(data);
-            if (user != null) {
-                var token = tokenService.generateToken(user);
-                return ResponseEntity.ok(new LoginResponseDto(token));
-            }
-       
-        return ResponseEntity.badRequest().body("Login ou senha incorretos");
+        UserDto userDto = authUser.authenticateLogin(data);
+        User user = new User();
+        BeanUtils.copyProperties(userDto, user);
+        var token = tokenService.generateToken(user);
+        return ResponseEntity.ok(new LoginResponseDto(token));
     }
     
     @Operation(description = "Atualiza um usuário do repositório pelo id")
@@ -106,12 +91,9 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
     @PutMapping("/editUser/{id}")
-    public ResponseEntity<Object> editUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDto userDto, BindingResult result) {
-        User updatedUser = userService.updateUser(id, userDto);
-        if(updatedUser != null){
-            return ResponseEntity.ok().body("Usuário editado com sucesso!");
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<UserDto> editUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDto userDto, BindingResult result) {
+        userService.updateUser(id, userDto);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @Operation(description = "Deleta um usuário pelo id")
@@ -121,11 +103,8 @@ public class UserController {
     })
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") UUID id) {
-        boolean deleted = userService.deleteUser(id);
-        if(deleted){
-            return ResponseEntity.ok().body("Usuário deletado com sucesso!");
-        }
-        return ResponseEntity.notFound().build();
+        UserDto userDto = userService.deleteUser(id);
+        return ResponseEntity.ok().body("Usuário " + userDto.name() + " deletado com sucesso!");
     }
 
     @Operation(description = "Deleta todos os usuários cadastrados")
@@ -135,11 +114,9 @@ public class UserController {
     })
     @DeleteMapping("/deleteAllUsers")
     public ResponseEntity<Object> deleteAllUsers() {
-        boolean deleted = userService.deleteAllUsers();
-        if(deleted){
-            return ResponseEntity.ok().body("Todos os usuários foram deletados com sucesso!");
-        }
-        return ResponseEntity.notFound().build();
+        userService.deleteAllUsers();
+        
+        return ResponseEntity.ok().body("Todos os usuários foram deletados com sucesso!");
     }
 
     private String validationErrors(BindingResult result) {

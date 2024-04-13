@@ -1,6 +1,8 @@
 package com.login.user.services;
 
 import com.login.user.dtos.UserDto;
+import com.login.user.exceptions.DuplicateCredentialsException;
+import com.login.user.exceptions.UserNotFoundException;
 import com.login.user.models.User;
 import com.login.user.models.UserRole;
 import com.login.user.repositories.UsersRepository;
@@ -23,44 +25,59 @@ public class UserService implements UserDetailsService {
 
 
     public Iterable<User> getAllUsers() {
-        return usersRepository.findAll();
-    }
-
-    public User getUserByLogin(String login) {
-        User user = usersRepository.findByLogin(login);
-        if(user != null){
-            return user;
+        Iterable<User> users = usersRepository.findAll();
+        boolean isEmpty = true;
+        for (@SuppressWarnings("unused") User user : users) {
+            isEmpty = false;
+            break;
         }
-        return null;
+
+        if (isEmpty) {
+            throw new UserNotFoundException("Não existe nenhum usuário cadastrado");
+        } 
+        return users;
     }
 
-    public User registerUser(UserDto userDto) {
+    public UserDto getUserByLogin(String login) {
+        User user = usersRepository.findByLogin(login);
+        if(user == null){
+            throw new UserNotFoundException();
+        }
+        UserDto userDto = new UserDto(user.getName(), user.getMail(), user.getLogin(), user.getPassword());
+        return userDto;
+    }
+
+    public UserDto registerUser(UserDto userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto, user);
-        if(usersRepository.findByMail(user.getMail()) != null || usersRepository.findByLogin(user.getUsername()) != null){
-            return null;
+
+        if(usersRepository.findByMail(user.getMail()) != null){
+            throw new DuplicateCredentialsException("E-mail já está sendo utilizado por outro usuário");
+        }else if(usersRepository.findByLogin(user.getUsername()) != null){
+            throw new DuplicateCredentialsException("Login já está sendo utilizado por outro usuário");
         }
 
         String hashedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(hashedPassword);
         user.setRole(UserRole.ADMIN);
-        return usersRepository.save(user);
+        usersRepository.save(user);
+        return userDto;
     }
 
-    public User updateUser(UUID id, UserDto userDto) {
+    public UserDto updateUser(UUID id, UserDto userDto) {
         Optional<User> optionalUser = usersRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
             if (!userDto.mail().equals(user.getMail())) {
                 if (usersRepository.findByMail(userDto.mail()) != null) {
-                    throw new RuntimeException("O email fornecido já está em uso por outro usuário.");
+                    throw new DuplicateCredentialsException("O email fornecido já está em uso por outro usuário.");
                 }
             }
     
             if (!userDto.login().equals(user.getUsername())) {
                 if (usersRepository.findByLogin(userDto.login()) != null) {
-                    throw new RuntimeException("O login fornecido já está em uso por outro usuário.");
+                    throw new DuplicateCredentialsException("O login fornecido já está em uso por outro usuário.");
                 }
             }
 
@@ -68,31 +85,33 @@ public class UserService implements UserDetailsService {
             String hashedPassword = encodePassword(user.getPassword());
             user.setPassword(hashedPassword);
             user.setRole(UserRole.ADMIN);
-            
-            return usersRepository.save(user);
+            usersRepository.save(user);
+            return userDto;
         }
-        return null;
+        throw new UserNotFoundException();
     }
 
-    public boolean deleteUser(UUID id) {
+    public UserDto deleteUser(UUID id) {
         Optional<User> optionalUser = usersRepository.findById(id);
         if (optionalUser.isPresent()) {
             usersRepository.delete(optionalUser.get());
-            return true;
+            User user = optionalUser.get();
+            UserDto userDto = new UserDto(user.getName(), user.getMail(), user.getLogin(), user.getPassword());
+            BeanUtils.copyProperties(user, userDto);
+            return userDto;
         }
-        return false;
+        throw new UserNotFoundException();
     }
 
-    public boolean deleteAllUsers() {
+    public void deleteAllUsers() {
         usersRepository.deleteAll();
-        return true;
     }
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = usersRepository.findByLogin(login);
         if (user == null) {
-            throw new UsernameNotFoundException("Usuário não encontrado");
+            throw new UserNotFoundException();
         }
         
         return org.springframework.security.core.userdetails.User

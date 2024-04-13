@@ -7,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.login.user.dtos.AuthenticationDto;
-import com.login.user.models.User;
+import com.login.user.dtos.UserDto;
+import com.login.user.exceptions.UserNotFoundException;
 
 @Service
 public class AuthUserService {
@@ -18,15 +19,15 @@ public class AuthUserService {
     @Autowired
     private UserService userService;
 
-    public User authenticateLogin(AuthenticationDto data){
+    public UserDto authenticateLogin(AuthenticationDto data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
             
         if (auth.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            User user = userService.getUserByLogin(userDetails.getUsername());
-            return user;
+            UserDto userDto = userService.getUserByLogin(userDetails.getUsername());
+            return userDto;
         }
-        return null;
+        throw new UserNotFoundException("Não foi possível autenticar esse usuário");
     }
 }
