@@ -38,13 +38,14 @@ token=$(curl -X POST http://localhost:8080/v1/users/login -H 'Content-Type: appl
 ## Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
 
 ### Obter Todos os Usuários
+
 - O método obter todos usuários funciona com paginação, substitua o 4 pelo número da página desejado e 2 pela quantidade de itens desejados.
-  
+
 curl -X GET localhost:8080/v1/users?page=4&items=2 -H "Authorization: Bearer $token" | jq '.'
 
 ### Obter Usuário
 
-curl -X GET http://localhost:8080/v1/users/loginUsuarioAqui -H "Authorization: Bearer $token" | jq '.'
+curl -X GET http://localhost:8080/v1/users/idUsuarioAqui -H "Authorization: Bearer $token" | jq '.'
 
 ### Atualizar Usuário
 

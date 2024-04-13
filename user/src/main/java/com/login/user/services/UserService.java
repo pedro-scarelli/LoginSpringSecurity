@@ -40,6 +40,16 @@ public class UserService implements UserDetailsService {
         return listUserDto;
     }
 
+    public UserDto getUserById(UUID id) {
+        Optional<User> optionalUser = usersRepository.findById(id);
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            UserDto userDto = new UserDto(user.getName(), user.getMail(), user.getLogin(), user.getPassword());
+            return userDto;
+        }
+        throw new UserNotFoundException();
+    }
+
     public UserDto getUserByLogin(String login) {
         User user = usersRepository.findByLogin(login);
         if(user == null){

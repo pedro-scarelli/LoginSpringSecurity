@@ -51,9 +51,9 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Retorna o usuário procurado"),
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
-    @GetMapping("/{login}")
-    public ResponseEntity<UserDto> getUser(@PathVariable String login) {
-        UserDto userDto = userService.getUserByLogin(login);
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
+        UserDto userDto = userService.getUserById(id);
         return ResponseEntity.ok(userDto);
     }
 
