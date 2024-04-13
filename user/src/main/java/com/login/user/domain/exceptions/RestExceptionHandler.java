@@ -16,6 +16,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     
     @ExceptionHandler(DuplicateCredentialsException.class)
     private ResponseEntity<String> duplicateCredentialsHandler(DuplicateCredentialsException exception){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(IncorrectCredentialsException.class)
+    private ResponseEntity<String> incorrectCredentialsHandler(IncorrectCredentialsException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }

@@ -13,5 +13,6 @@ com/login/user/domain/exceptions/RestExceptionHandler.class
 com/login/user/UserApplication.class
 com/login/user/config/WebConfig.class
 com/login/user/domain/dtos/LoginResponseDto.class
+com/login/user/domain/exceptions/IncorrectCredentialsException.class
 com/login/user/config/SecurityConfig.class
 com/login/user/domain/exceptions/DuplicateCredentialsException.class
