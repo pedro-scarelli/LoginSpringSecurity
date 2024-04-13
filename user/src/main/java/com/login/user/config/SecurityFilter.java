@@ -42,7 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                     throw new RuntimeException("Usuário não autenticado");
                 }
             } else {
-                throw new RuntimeException("Usuário não encontrado");
+                throw new RuntimeException("O usuário dono do token fornecido foi deletado");
             }
         }
         filterChain.doFilter(request, response);

@@ -1,6 +1,7 @@
 package com.login.user.controllers;
 
 import com.login.user.domain.dtos.AuthenticationDto;
+import com.login.user.domain.dtos.ListUserDto;
 import com.login.user.domain.dtos.LoginResponseDto;
 import com.login.user.domain.dtos.UserDto;
 import com.login.user.domain.models.User;
@@ -38,11 +39,11 @@ public class UserController {
     @Operation(description = "Busca todos os usuários no repositório")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Retorna todos os usuários"),
-        @ApiResponse(responseCode = "400", description = "Não existe nenhum usuário salvo")
+        @ApiResponse(responseCode = "403", description = "Token inválido")
     })
     @GetMapping
-    public ResponseEntity<Object> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<ListUserDto> getAllUsers(@RequestParam int page, @RequestParam int items) {
+        return ResponseEntity.ok(userService.getAllUsers(page, items));
     }
 
     @Operation(description = "Busca um usuário pelo login")
@@ -75,7 +76,7 @@ public class UserController {
     @Operation(description = "Faz o login do usuário com login e autenticação da senha")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Retorna o token que vai ser utilizado pelo usuário automaticamente"),
-        @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
+        @ApiResponse(responseCode = "400", description = "Retorna login incorreto ou senha incorreta")
     })
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody @Valid AuthenticationDto data) {
@@ -111,7 +112,7 @@ public class UserController {
     @Operation(description = "Deleta todos os usuários cadastrados")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Todos os usuários foram deletados com sucesso"),
-        @ApiResponse(responseCode = "404", description = "Não foi possível excluir todos os usuários")
+        @ApiResponse(responseCode = "403", description = "Token inválido")
     })
     @DeleteMapping("/delete_all")
     public ResponseEntity<Object> deleteAllUsers() {
