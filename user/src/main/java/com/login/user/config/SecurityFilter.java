@@ -1,4 +1,4 @@
-package com.login.user.security;
+package com.login.user.config;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.login.user.models.User;
+import com.login.user.domain.models.*;
 import com.login.user.repositories.UsersRepository;
 import com.login.user.services.TokenService;
 

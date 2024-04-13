@@ -1,4 +1,5 @@
-package com.login.user.dtos;
+package com.login.user.domain.dtos;
+
 
 public record LoginResponseDto (String token){
 }

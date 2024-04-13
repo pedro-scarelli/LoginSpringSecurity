@@ -1,4 +1,4 @@
-package com.login.user.dtos;
+package com.login.user.domain.dtos;
 
 public record AuthenticationDto(String login, String password) {
     

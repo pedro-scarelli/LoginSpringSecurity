@@ -3,7 +3,7 @@ package com.login.user.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.login.user.models.User;
+import com.login.user.domain.models.User;
 
 import java.util.UUID;
 

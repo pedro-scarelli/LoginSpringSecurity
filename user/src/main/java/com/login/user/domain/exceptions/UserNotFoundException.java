@@ -1,4 +1,4 @@
-package com.login.user.exceptions;
+package com.login.user.domain.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
     

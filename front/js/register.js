@@ -8,7 +8,7 @@ const registerBtn = document.getElementById("registerBtn").addEventListener("cli
 
   if (name !== "" && password !== "" && login !== "" && mail !== "") {
     if (emailRegex.test(mail) == true) {
-      fetch("http://localhost:8080/register", {
+      fetch("http://localhost:8080/v1/users/register", {
         method: "post",
         headers: {
           "Content-Type": "application/json",

@@ -4,7 +4,7 @@ const sendBtn = document.getElementById("sendBtn").addEventListener("click", (ev
   const password = document.getElementById("password").value
 
   if (username !== "" && password !== "") {
-    fetch("http://localhost:8080/login", {
+    fetch("http://localhost:8080/v1/users/login", {
       method: "post",
       headers: {
         "Content-Type": "application/json",

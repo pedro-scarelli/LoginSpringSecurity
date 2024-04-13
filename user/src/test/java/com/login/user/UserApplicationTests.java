@@ -1,10 +1,10 @@
 package com.login.user;
 
-import com.login.user.dtos.UserDto;
-import com.login.user.exceptions.DuplicateCredentialsException;
-import com.login.user.exceptions.UserNotFoundException;
-import com.login.user.models.User;
-import com.login.user.models.UserRole;
+import com.login.user.domain.dtos.UserDto;
+import com.login.user.domain.exceptions.DuplicateCredentialsException;
+import com.login.user.domain.exceptions.UserNotFoundException;
+import com.login.user.domain.models.User;
+import com.login.user.domain.models.UserRole;
 import com.login.user.repositories.UsersRepository;
 import com.login.user.services.UserService;
 

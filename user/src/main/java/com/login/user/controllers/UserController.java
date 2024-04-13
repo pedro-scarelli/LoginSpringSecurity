@@ -1,9 +1,9 @@
 package com.login.user.controllers;
 
-import com.login.user.dtos.AuthenticationDto;
-import com.login.user.dtos.LoginResponseDto;
-import com.login.user.dtos.UserDto;
-import com.login.user.models.User;
+import com.login.user.domain.dtos.AuthenticationDto;
+import com.login.user.domain.dtos.LoginResponseDto;
+import com.login.user.domain.dtos.UserDto;
+import com.login.user.domain.models.User;
 import com.login.user.services.AuthUserService;
 import com.login.user.services.TokenService;
 import com.login.user.services.UserService;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+@RequestMapping("/v1/users")
 @RestController
 public class UserController {
 
@@ -39,7 +40,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Retorna todos os usuários"),
         @ApiResponse(responseCode = "400", description = "Não existe nenhum usuário salvo")
     })
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<Object> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
@@ -49,7 +50,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Retorna o usuário procurado"),
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
-    @GetMapping("/users/{login}")
+    @GetMapping("/{login}")
     public ResponseEntity<UserDto> getUser(@PathVariable String login) {
         UserDto userDto = userService.getUserByLogin(login);
         return ResponseEntity.ok(userDto);
@@ -90,7 +91,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Retorna o usuário procurado"),
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
-    @PutMapping("/editUser/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDto> editUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDto userDto, BindingResult result) {
         userService.updateUser(id, userDto);
         return ResponseEntity.ok().body(userDto);
@@ -101,7 +102,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Usuário deletado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
-    @DeleteMapping("/deleteUser/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable("id") UUID id) {
         UserDto userDto = userService.deleteUser(id);
         return ResponseEntity.ok().body("Usuário " + userDto.name() + " deletado com sucesso!");
@@ -112,7 +113,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Todos os usuários foram deletados com sucesso"),
         @ApiResponse(responseCode = "404", description = "Não foi possível excluir todos os usuários")
     })
-    @DeleteMapping("/deleteAllUsers")
+    @DeleteMapping("/delete_all")
     public ResponseEntity<Object> deleteAllUsers() {
         userService.deleteAllUsers();
         

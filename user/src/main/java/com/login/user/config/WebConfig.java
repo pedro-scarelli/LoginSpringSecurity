@@ -1,4 +1,4 @@
-package com.login.user;
+package com.login.user.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

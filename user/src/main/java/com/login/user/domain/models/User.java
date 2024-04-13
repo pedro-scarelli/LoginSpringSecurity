@@ -1,4 +1,4 @@
-package com.login.user.models;
+package com.login.user.domain.models;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,7 +1,7 @@
 const token = localStorage.getItem("jwt-token")
 
 if (token) {
-  fetch("http://localhost:8080/users", {
+  fetch("http://localhost:8080/v1/users", {
     method: "get",
     headers: {
       "Content-Type": "application/json",

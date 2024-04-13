@@ -6,9 +6,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.login.user.dtos.AuthenticationDto;
-import com.login.user.dtos.UserDto;
-import com.login.user.exceptions.UserNotFoundException;
+import com.login.user.domain.dtos.AuthenticationDto;
+import com.login.user.domain.dtos.UserDto;
+import com.login.user.domain.exceptions.UserNotFoundException;
 
 @Service
 public class AuthUserService {

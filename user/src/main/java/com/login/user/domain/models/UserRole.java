@@ -1,4 +1,4 @@
-package com.login.user.models;
+package com.login.user.domain.models;
 
 public enum UserRole {
     ADMIN("admin"),
