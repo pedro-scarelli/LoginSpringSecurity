@@ -13,10 +13,7 @@ phases:
     commands:
       - echo Building the Java code
       - cd $user
-      - pwd
-      - echo Maven Build on `date`
       - java -version
-      - mvn clean install
 
   post_build:
     commands:
