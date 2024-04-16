@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: coretto11
+
+  pre_build:
+    commands:
+      - echo skipped on `date`
+
+  build:
+    commands:
+      - echo Building the Java code
+      - cd $user
+      - echo Maven Build on `date`
+      - java -version
+      - mvn clean install
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - target/spring-boot.jar
