@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.login.user.UserServiceTest
 -------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.765 s -- in com.login.user.UserServiceTest
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.645 s -- in com.login.user.UserServiceTest
