@@ -13,7 +13,7 @@ phases:
     commands:
       - echo Building the Java code
       - cd user
-      - java -version
+      - mvn clean package
 
   post_build:
     commands:
@@ -21,4 +21,4 @@ phases:
 
 artifacts:
   files:
-    - user/target/
+    - user/target/spring-boot.jar
