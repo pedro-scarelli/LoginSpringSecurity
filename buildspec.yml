@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      java: coretto-17
+      java: coretto17
 
   pre_build:
     commands:
@@ -13,6 +13,7 @@ phases:
     commands:
       - echo Building the Java code
       - cd $user
+      - pwd
       - echo Maven Build on `date`
       - java -version
       - mvn clean install
