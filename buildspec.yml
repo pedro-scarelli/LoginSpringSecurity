@@ -21,4 +21,4 @@ phases:
 
 artifacts:
   files:
-    - target/spring-boot.jar
+    - user/target/spring-boot.jar
