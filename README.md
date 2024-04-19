@@ -29,11 +29,17 @@ Aplicativo web de gerenciamento de usuários desenvolvido usando Spring Boot, Sp
 
 ### Registro de Usuário
 
-curl -X POST http://localhost:8080/v1/users/register -H 'Content-Type: application/json' -d '{ "name": "exampleUser", "mail": "user@example.com", "login": "exampleUser", "password": "password123" }' | jq '.'
+curl -X POST http://localhost:8080/v1/users/register -H 'Content-Type: application/json' -d '{
+"name": "exampleUser",
+"mail": "user@example.com",
+"login": "exampleUser",
+"password": "password123" }' | jq '.'
 
 ### Login de Usuário e Obtenção do token
 
-token=$(curl -X POST http://localhost:8080/v1/users/login -H 'Content-Type: application/json' -d '{ "login": "exampleUser", "password": "password123" }' | jq -r '.token')
+token=$(curl -X POST http://localhost:8080/v1/users/login -H 'Content-Type: application/json' -d '{
+"login": "exampleUser",
+"password": "password123" }' | jq -r '.token')
 
 ## Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
 
@@ -49,7 +55,10 @@ curl -X GET http://localhost:8080/v1/users/idUsuarioAqui -H "Authorization: Bear
 
 ### Atualizar Usuário
 
-curl -X PUT http://localhost:8080/v1/users/idUsuariosAqui -H 'Content-Type: application/json' -H "Authorization: Bearer $token" -d '{ "name": "exampleUserUpdated", "mail": "update@example.com", "login": "exampleUpdate", "password": "newPassword" }'
+curl -X PUT http://localhost:8080/v1/users/idUsuariosAqui -H 'Content-Type: application/json' -H "Authorization: Bearer $token" -d '{ "name": "exampleUserUpdated",
+"mail": "update@example.com",
+"login": "exampleUpdate",
+"password": "newPassword" }'
 
 - Se você atualizar o usuário com que fez login precisara fazer o login denovo.
 
