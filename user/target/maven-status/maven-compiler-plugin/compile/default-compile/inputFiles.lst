@@ -1,14 +1,13 @@
-/home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/models/UserRoleConverter.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/exceptions/DuplicateCredentialsException.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/exceptions/RestExceptionHandler.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/services/TokenService.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/exceptions/UserNotFoundException.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/controllers/UserController.java
-/home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/services/AuthUserService.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/exceptions/IncorrectCredentialsException.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/models/User.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/config/SecurityFilter.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/dtos/AuthenticationDto.java
+/home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/services/AuthenticateUserService.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/config/WebConfig.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/dtos/ListUserDto.java
 /home/pvscarelli/Documents/GitHub/LoginComSpringSecurity/user/src/main/java/com/login/user/domain/dtos/LoginResponseDto.java

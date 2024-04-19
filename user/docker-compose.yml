@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=08d775d29ca397ff0510b0e3d16270be7a3cf021936b899cdc2ad6c87aa029e6
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ec2-23-20-211-19.compute-1.amazonaws.com:5432/d5utv53cmjmo62
       - SPRING_DATASOURCE_USERNAME=zdikjpgtxtfbdv
-      - SPRING_DATASOURCE_PASSWORD=9c7a95b472a1a0e508e41b302210b5600eb68e45b4a322afbad3679f2b6782a8
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
 
     ports:
       - "8080:8080"

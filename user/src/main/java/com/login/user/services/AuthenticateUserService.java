@@ -21,18 +21,18 @@ public class AuthenticateUserService {
     @Autowired
     private UserService userService;
 
-    public User authenticateLogin(AuthenticationDto data){
+    public User authenticateLogin(AuthenticationDto loginData){
         try{
-        User user = userService.getUserByLogin(data.login());
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        User user = userService.getUserByLogin(loginData.login());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(loginData.login(), loginData.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
         if (auth.getPrincipal() instanceof UserDetails) {
             return user;
         }
         } catch (UserNotFoundException exception){
-            throw new IncorrectCredentialsException("Login incorreto");
+            throw new IncorrectCredentialsException("Login ou senha incorretos");
         } catch (AuthenticationException exception){
-            throw new IncorrectCredentialsException("Senha incorreta");
+            throw new IncorrectCredentialsException("Login ou senha incorretos");
         }
         throw new UserNotFoundException("Não foi possível autenticar esse usuário");
     }

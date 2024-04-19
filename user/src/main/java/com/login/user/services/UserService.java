@@ -1,6 +1,5 @@
 package com.login.user.services;
 
-import com.login.user.domain.dtos.ListUserDto;
 import com.login.user.domain.dtos.UserDto;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
@@ -25,7 +24,7 @@ public class UserService implements UserDetailsService {
     private UsersRepository usersRepository;
 
 
-    public ListUserDto getAllUsers(int page, int items) {
+    public Iterable<User> getAllUsers(int page, int items) {
         Iterable<User> users = usersRepository.findAll(PageRequest.of(page, items));
         boolean isEmpty = true;
         for (@SuppressWarnings("unused") User user : users) {
@@ -36,81 +35,68 @@ public class UserService implements UserDetailsService {
         if (isEmpty) {
             throw new UserNotFoundException("Não existe nenhum usuário cadastrado");
         } 
-        ListUserDto listUserDto = new ListUserDto(users);
-        return listUserDto;
+
+        return users;
     }
 
-    public UserDto getUserById(UUID id) {
+    public User getUserById(UUID id) {
         Optional<User> optionalUser = usersRepository.findById(id);
         if(optionalUser.isPresent()){
-            User user = optionalUser.get();
-            UserDto userDto = new UserDto(user.getName(), user.getMail(), user.getLogin(), user.getPassword());
-            return userDto;
+            User userFound = optionalUser.get();
+            return userFound;
         }
         throw new UserNotFoundException();
     }
 
-    public UserDto getUserByLogin(String login) {
-        User user = usersRepository.findByLogin(login);
-        if(user == null){
+    public User getUserByLogin(String login) {
+        User userFound = usersRepository.findByLogin(login);
+        if(userFound == null){
             throw new UserNotFoundException();
         }
-        UserDto userDto = new UserDto(user.getName(), user.getMail(), user.getLogin(), user.getPassword());
-        return userDto;
+        return userFound;
     }
 
-    public UserDto registerUser(UserDto userDto) {
-        User user = new User();
-        BeanUtils.copyProperties(userDto, user);
+    public User registerUser(UserDto userDto) {
+        User newUser = new User();
+        BeanUtils.copyProperties(userDto, newUser);
 
-        if(usersRepository.findByMail(user.getMail()) != null){
-            throw new DuplicateCredentialsException("E-mail já está sendo utilizado por outro usuário");
-        }else if(usersRepository.findByLogin(user.getUsername()) != null){
-            throw new DuplicateCredentialsException("Login já está sendo utilizado por outro usuário");
+        if(usersRepository.findByMail(newUser.getMail()) != null || usersRepository.findByLogin(newUser.getUsername()) != null){
+            throw new DuplicateCredentialsException();
         }
 
-        String hashedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
-        user.setPassword(hashedPassword);
+        String hashedPassword = new BCryptPasswordEncoder().encode(newUser.getPassword());
+        newUser.setPassword(hashedPassword);
         
-        usersRepository.save(user);
-        return userDto;
+        usersRepository.save(newUser);
+        return newUser;
     }
 
-    public UserDto updateUser(UUID id, UserDto userDto) {
+    public User updateUser(UUID id, UserDto userDto) {
         Optional<User> optionalUser = usersRepository.findById(id);
+
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-
-            if (!userDto.mail().equals(user.getMail())) {
-                if (usersRepository.findByMail(userDto.mail()) != null) {
-                    throw new DuplicateCredentialsException("O email fornecido já está em uso por outro usuário.");
-                }
+            User userToUpdate = optionalUser.get();
+            if (!userDto.mail().equals(userToUpdate.getMail()) && usersRepository.findByMail(userDto.mail()) != null
+            || !userDto.login().equals(userToUpdate.getUsername()) && usersRepository.findByLogin(userDto.login()) != null) {
+                throw new DuplicateCredentialsException();
             }
-    
-            if (!userDto.login().equals(user.getUsername())) {
-                if (usersRepository.findByLogin(userDto.login()) != null) {
-                    throw new DuplicateCredentialsException("O login fornecido já está em uso por outro usuário.");
-                }
-            }
+            BeanUtils.copyProperties(userDto, userToUpdate);
+            String hashedPassword = encodePassword(userToUpdate.getPassword());
+            userToUpdate.setPassword(hashedPassword);
+            usersRepository.save(userToUpdate);
 
-            BeanUtils.copyProperties(userDto, user);
-            String hashedPassword = encodePassword(user.getPassword());
-            user.setPassword(hashedPassword);
-            
-            usersRepository.save(user);
-            return userDto;
+            return userToUpdate;
         }
+        
         throw new UserNotFoundException();
     }
 
-    public UserDto deleteUser(UUID id) {
+    public User deleteUser(UUID id) {
         Optional<User> optionalUser = usersRepository.findById(id);
         if (optionalUser.isPresent()) {
             usersRepository.delete(optionalUser.get());
-            User user = optionalUser.get();
-            UserDto userDto = new UserDto(user.getName(), user.getMail(), user.getLogin(), user.getPassword());
-            BeanUtils.copyProperties(user, userDto);
-            return userDto;
+            User deletedUser = optionalUser.get();
+            return deletedUser;
         }
         throw new UserNotFoundException();
     }

@@ -5,7 +5,7 @@ import com.login.user.domain.dtos.ListUserDto;
 import com.login.user.domain.dtos.LoginResponseDto;
 import com.login.user.domain.dtos.UserDto;
 import com.login.user.domain.models.User;
-import com.login.user.services.AuthUserService;
+import com.login.user.services.AuthenticateUserService;
 import com.login.user.services.TokenService;
 import com.login.user.services.UserService;
 
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -31,7 +30,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private AuthUserService authUser;
+    private AuthenticateUserService authenticateUserService;
 
     @Autowired
     private TokenService tokenService;
@@ -43,7 +42,8 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<ListUserDto> getAllUsers(@RequestParam int page, @RequestParam int items) {
-        return ResponseEntity.ok(userService.getAllUsers(page, items));
+        ListUserDto usersList = new ListUserDto(userService.getAllUsers(page, items));
+        return ResponseEntity.ok(usersList);
     }
 
     @Operation(description = "Busca um usuário pelo login")
@@ -53,7 +53,9 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
-        UserDto userDto = userService.getUserById(id);
+        User userFound = userService.getUserById(id);
+        UserDto userDto = new UserDto(userFound.getName(),userFound.getMail(), userFound.getLogin(), userFound.getPassword());
+
         return ResponseEntity.ok(userDto);
     }
 
@@ -63,14 +65,14 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "Retorna os erros do formulário caso tenha algum campo inválido, ou retorna junto a mensagem \"E-mail ou login duplicado\"")
     })
     @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@Valid @RequestBody UserDto userDto, BindingResult result) {
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody UserDto registerUserDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(validationErrors(result));
         }
 
-        userService.registerUser(userDto);
+        userService.registerUser(registerUserDto);
 
-        return ResponseEntity.ok().body(userDto);
+        return ResponseEntity.ok().body(registerUserDto);
     }
 
     @Operation(description = "Faz o login do usuário com login e autenticação da senha")
@@ -79,11 +81,9 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "Retorna login incorreto ou senha incorreta")
     })
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody @Valid AuthenticationDto data) {
-        UserDto userDto = authUser.authenticateLogin(data);
-        User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        var token = tokenService.generateToken(user);
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid AuthenticationDto loginData) {
+        User authenticatedUser = authenticateUserService.authenticateLogin(loginData);
+        var token = tokenService.generateToken(authenticatedUser);
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
     
@@ -93,9 +93,9 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> editUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDto userDto, BindingResult result) {
-        userService.updateUser(id, userDto);
-        return ResponseEntity.ok().body(userDto);
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") UUID id, @Valid @RequestBody UserDto updateUserDto, BindingResult result) {
+        userService.updateUser(id, updateUserDto);
+        return ResponseEntity.ok().body(updateUserDto);
     }
 
     @Operation(description = "Deleta um usuário pelo id")
@@ -104,9 +104,9 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Não existe nenhum usuário salvo com esse login")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("id") UUID id) {
-        UserDto userDto = userService.deleteUser(id);
-        return ResponseEntity.ok().body("Usuário " + userDto.name() + " deletado com sucesso!");
+    public ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
+        User deletedUser = userService.deleteUser(id);
+        return ResponseEntity.ok().body("Usuário " + deletedUser.getName() + " deletado com sucesso!");
     }
 
     @Operation(description = "Deleta todos os usuários cadastrados")
@@ -115,7 +115,7 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Token inválido")
     })
     @DeleteMapping("/delete_all")
-    public ResponseEntity<Object> deleteAllUsers() {
+    public ResponseEntity<String> deleteAllUsers() {
         userService.deleteAllUsers();
         
         return ResponseEntity.ok().body("Todos os usuários foram deletados com sucesso!");

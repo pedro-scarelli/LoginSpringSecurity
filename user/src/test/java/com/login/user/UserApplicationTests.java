@@ -47,10 +47,10 @@ class UserServiceTest {
     
         when(usersRepository.findByLogin(user.getUsername())).thenReturn(user);
     
-        UserDto foundUser = userService.getUserByLogin(user.getUsername());   
-        assertEquals(user.getName(), foundUser.name());
-        assertEquals(user.getMail(), foundUser.mail());
-        assertEquals(user.getUsername(), foundUser.login());
+        User foundUser = userService.getUserByLogin(user.getUsername());   
+        assertEquals(user.getName(), foundUser.getName());
+        assertEquals(user.getMail(), foundUser.getMail());
+        assertEquals(user.getUsername(), foundUser.getLogin());
     }
 
     @Test
@@ -93,12 +93,12 @@ class UserServiceTest {
         when(usersRepository.findByMail(userDto.mail())).thenReturn(null);
         when(usersRepository.save(any(User.class))).thenReturn(user);
 
-        UserDto savedUser = userService.registerUser(userDto);
+        User savedUser = userService.registerUser(userDto);
 
         assertNotNull(savedUser);
-        assertEquals(user.getName(), savedUser.name());
-        assertEquals(user.getMail(), savedUser.mail());
-        assertEquals(user.getUsername(), savedUser.login());
+        assertEquals(user.getName(), savedUser.getName());
+        assertEquals(user.getMail(), savedUser.getMail());
+        assertEquals(user.getUsername(), savedUser.getLogin());
     }
 
     @Test
@@ -125,10 +125,10 @@ class UserServiceTest {
         when(usersRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(usersRepository.save(any(User.class))).thenReturn(existingUser);
 
-        UserDto updatedUser = userService.updateUser(userId, updatedUserDto);
+        User updatedUser = userService.updateUser(userId, updatedUserDto);
 
-        assertEquals(updatedUserDto.name(), updatedUser.name());
-        assertEquals(updatedUserDto.mail(), updatedUser.mail());
+        assertEquals(updatedUserDto.name(), updatedUser.getName());
+        assertEquals(updatedUserDto.mail(), updatedUser.getMail());
     }
 
     @Test
@@ -153,12 +153,12 @@ class UserServiceTest {
     
         when(usersRepository.findById(userId)).thenReturn(Optional.of(existingUser));
     
-        UserDto deletedUserDto = userService.deleteUser(userId);
+        User deletedUserDto = userService.deleteUser(userId);
     
-        assertEquals(existingUser.getName(), deletedUserDto.name());
-        assertEquals(existingUser.getMail(), deletedUserDto.mail());
-        assertEquals(existingUser.getLogin(), deletedUserDto.login());
-        assertEquals(existingUser.getPassword(), deletedUserDto.password());
+        assertEquals(existingUser.getName(), deletedUserDto.getName());
+        assertEquals(existingUser.getMail(), deletedUserDto.getMail());
+        assertEquals(existingUser.getLogin(), deletedUserDto.getLogin());
+        assertEquals(existingUser.getPassword(), deletedUserDto.getPassword());
     }
 
     @Test
