@@ -50,7 +50,7 @@ token=$(curl -X POST http://localhost:8080/v1/users/login -H 'Content-Type: appl
 "login": "exampleUser",
 "password": "password123" }' | jq -r '.token')
 ```
-### Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
+#### Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
 
 ### Obter Todos os Usuários
 
