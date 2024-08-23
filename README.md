@@ -10,12 +10,16 @@ Aplicativo web de gerenciamento de usuários desenvolvido usando Spring Boot, Sp
 
 - Docker
 - Docker Compose
+- Git
 
-### Inicialização do Servidor Backend
+### Inicialização do Servidor
 
-1. No terminal navegue até a pasta User/user
-2. Execute o comando `docker-compose up` para iniciar a api.
-3. Se a porta 8080 não estiver disponível ele vai iniciar em outra porta.
+1. No terminal navegue até a pasta onde deseja clonar o projeto e execute o comando
+```bash
+git clone https://github.com/pvscarelli/LoginComSpringSecurity.git
+```
+3. Execute o comando `docker-compose up` para iniciar a api.
+4. Se a porta 8080 não estiver disponível ele vai iniciar em outra porta.
 
 ### Acesso ao Aplicativo
 
