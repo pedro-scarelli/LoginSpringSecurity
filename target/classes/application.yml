@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    open-in-view: false
+  application:
+    name: user
+  datasource:
+    url: jdbc:postgresql://ec2-23-20-211-19.compute-1.amazonaws.com:5432/d5utv53cmjmo62
+    username: zdikjpgtxtfbdv
+    password: ${DB_PASSWORD}
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:my-secret-key}
