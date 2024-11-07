@@ -63,7 +63,7 @@ public class UserController {
 
     @Operation(description = "Faz o registro de um usuário no banco de dados")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Retorna o usuário criado"),
+        @ApiResponse(responseCode = "201", description = "Retorna o usuário criado."),
         @ApiResponse(responseCode = "400", description = "Retorna os erros do formulário caso tenha algum campo inválido, ou retorna junto a mensagem \"E-mail ou login duplicado\"")
     })
     @PostMapping("/register")
