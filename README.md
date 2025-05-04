@@ -20,13 +20,8 @@ git clone https://github.com/pvscarelli/LoginComSpringSecurity.git
 cd LoginComSpringSecurity
 ```
 3. Já na pasta root do projeto, execute o comando
-
 ```bash
-docker-compose up
-```
-ou caso esteja em uma versão mais recente do docker
-```bash
-docker compose up
+docker compose up --build
 ```
 para iniciar a api.
 
