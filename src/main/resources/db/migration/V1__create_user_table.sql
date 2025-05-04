@@ -1,4 +1,4 @@
-create table users (
+create table tb_users (
     pk_id UUID PRIMARY KEY,
     st_name VARCHAR(100),
     st_email VARCHAR(200) UNIQUE,
@@ -7,7 +7,7 @@ create table users (
 );
 
 --As senhas desses usuários é senha123
-INSERT INTO users (pk_id, st_name, st_email, st_login, st_hashed_password)
+INSERT INTO tb_users (pk_id, st_name, st_email, st_login, st_hashed_password)
 VALUES
     ('d8311b34-5b8b-46b3-8556-5a78f46e39ae', 'João', 'joao@example.com', 'joao123', '$2a$10$aNnnXNRfFTjF3049ALYDyOs7Avrtb04o51CmkcmJ401dagdwEt/9.'),
     ('a4e38f33-ff2e-4ff0-8195-91e8794c0b6a', 'Maria', 'maria@example.com', 'maria456', '$2a$10$2WYExYdnoFpn..ZnM5RV7ufCj2zWgTZ25TeBExN44daykJgWhqrDG'),
