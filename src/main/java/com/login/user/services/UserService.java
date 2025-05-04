@@ -1,11 +1,9 @@
 package com.login.user.services;
 
-import com.login.user.domain.dtos.response.UserResponseDTO;
-import com.login.user.domain.dtos.request.*;
-import com.login.user.domain.exceptions.DuplicateCredentialsException;
-import com.login.user.domain.exceptions.UserNotFoundException;
-import com.login.user.domain.models.User;
-import com.login.user.repositories.UserRepository;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,10 +13,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.login.user.domain.dtos.request.RegisterUserRequestDTO;
+import com.login.user.domain.dtos.request.UpdateUserRequestDTO;
+import com.login.user.domain.dtos.response.UserPaginationResponseDTO;
+import com.login.user.domain.dtos.response.UserResponseDTO;
+import com.login.user.domain.exceptions.DuplicateCredentialsException;
+import com.login.user.domain.exceptions.UserNotFoundException;
+import com.login.user.domain.models.User;
+import com.login.user.repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -27,13 +29,17 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
 
-    public List<UserResponseDTO> getAllUsers(int page, int items) {
-        var users = userRepository.findAll(PageRequest.of(page-1, items));
+    public UserPaginationResponseDTO getAllUsers(int page, int items) {
+        var users = userRepository.findAll(PageRequest.of(page - 1, items));
         var usersResponseDto = StreamSupport.stream(users.spliterator(), false)
-            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.getLogin()))
+            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail()))
             .collect(Collectors.toList());
 
-        return usersResponseDto;
+        return new UserPaginationResponseDTO(
+            users.getTotalElements(),
+            users.getTotalPages(),
+            usersResponseDto
+        );
     }
 
     public User getUserById(UUID id) {
@@ -48,8 +54,8 @@ public class UserService implements UserDetailsService {
         throw new UserNotFoundException();
     }
 
-    public User getUserByLogin(String login) {
-        var userFound = userRepository.findByLogin(login);
+    public User getUserByEmail(String email) {
+        var userFound = userRepository.findByEmail(email);
         if(userFound == null){
             throw new UserNotFoundException();
         }
@@ -61,7 +67,7 @@ public class UserService implements UserDetailsService {
         var newUser = new User();
         BeanUtils.copyProperties(registerUserRequestDto, newUser);
 
-        isUserCredentialsDuplicated(newUser.getLogin(), newUser.getEmail());
+        isUserCredentialsDuplicated(newUser.getEmail());
 
         var hashedPassword = new BCryptPasswordEncoder().encode(newUser.getPassword());
         newUser.setPassword(hashedPassword);
@@ -70,8 +76,8 @@ public class UserService implements UserDetailsService {
         return newUser;
     }
 
-    public void isUserCredentialsDuplicated(String login, String email) {
-        if (userRepository.existsByLoginOrMail(login, email)) {
+    public void isUserCredentialsDuplicated(String email) {
+        if (userRepository.existsByEmail(email)) {
             throw new DuplicateCredentialsException();
         }
     }
@@ -80,8 +86,10 @@ public class UserService implements UserDetailsService {
         var userToUpdate = getUserById(id);
 
         BeanUtils.copyProperties(updateUserRequestDto, userToUpdate);
-        var hashedPassword = encodePassword(userToUpdate.getPassword());
-        userToUpdate.setPassword(hashedPassword);
+        if (updateUserRequestDto.password() != null) {
+            var hashedPassword = encodePassword(userToUpdate.getPassword());
+            userToUpdate.setPassword(hashedPassword);
+        }
         userRepository.save(userToUpdate);
 
         return userToUpdate;
@@ -95,8 +103,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        var user = userRepository.findByLogin(login);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UserNotFoundException();
         }

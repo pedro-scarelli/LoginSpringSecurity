@@ -1,17 +1,19 @@
 package com.login.user.controllers;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.login.user.domain.dtos.request.*;
-import com.login.user.domain.dtos.response.UserResponseDTO;
+import com.login.user.domain.dtos.response.*;
+import com.login.user.domain.exceptions.UnauthorizedException;
+import com.login.user.domain.models.User;
 import com.login.user.services.UserService;
 import com.login.user.utils.ValidationUtils;
 
@@ -20,7 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
-@RequestMapping("/v1/users")
+@RequestMapping("/v1/user")
 @RestController
 public class UserController {
 
@@ -44,7 +46,7 @@ public class UserController {
                     .path("/{id}")
                     .buildAndExpand(newUser.getId())
                     .toUri();
-        var message = Map.of("message", "Usuário criado com sucesso!", "userId", newUser.getId());
+        var message = Map.of("message", "Usuário criado com sucesso", "userId", newUser.getId());
 
         return ResponseEntity.created(location).body(message);
     }
@@ -55,10 +57,8 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Não autorizado")
     })
     @GetMapping
-    public ResponseEntity<Map<String, List<UserResponseDTO>>> getAllUsers(@RequestParam int page, @RequestParam int items) {
-        Map<String, List<UserResponseDTO>> users = Map.of("users", userService.getAllUsers(page, items));
-
-        return ResponseEntity.ok(users);
+    public ResponseEntity<UserPaginationResponseDTO> getAllUsers(@RequestParam int page, @RequestParam int items) {
+        return ResponseEntity.ok(userService.getAllUsers(page, items));
     }
 
     @Operation(description = "Busca um usuário pelo ID")
@@ -68,8 +68,9 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
+        ValidationUtils.isTargetUserSameFromRequest(id);
         var userFound = userService.getUserById(id);
-        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail(), userFound.getLogin());
+        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail());
 
         return ResponseEntity.ok(userResponseDto);
     }
@@ -79,13 +80,14 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequestDTO updateUserRequestDto,
             BindingResult result) {
+        ValidationUtils.isTargetUserSameFromRequest(id);
         var updatedUser = userService.updateUser(id, updateUserRequestDto);
-        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail(), updatedUser.getLogin());
+        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail());
 
         return ResponseEntity.ok().body(userDto);
     }
@@ -97,6 +99,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable("id") UUID id) {
+        ValidationUtils.isTargetUserSameFromRequest(id);
         var deletedUser = userService.deleteUser(id);
         Map<String, String> message = Map.of("message", "Usuário " + deletedUser.getName() + " deletado com sucesso!");
 

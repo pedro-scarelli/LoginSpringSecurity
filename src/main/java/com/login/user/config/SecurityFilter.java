@@ -40,7 +40,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (token != null) {
             var login = tokenService.validateToken(token);
 
-            isUserAuthenticated(userRepository.findByLogin(login));
+            isUserAuthenticated(userRepository.findByEmail(login));
         }
 
         filterChain.doFilter(request, response);

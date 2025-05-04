@@ -43,35 +43,24 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByNonExistingLoginShouldThrowUserNotFoundException(){
-        var login = "teste";
-        when(userRepository.findByLogin(login)).thenReturn(null);
+    void getUserByNonExistingEmailShouldThrowUserNotFoundException(){
+        var email = "test@gmail.com";
+        when(userRepository.findByEmail(email)).thenReturn(null);
 
         try{
-            userService.getUserByLogin(login);
+            userService.getUserByEmail(email);
             fail();
         } catch(UserNotFoundException exception) {}
     }
 
     @Test
     void registerDuplicatedUserCredentialsShouldThrowDuplicatedCredentialsException() {
-        var registerUserDto = new RegisterUserRequestDTO("John Doe", "john@example.com", "login", "password");
-        when(userRepository.existsByLoginOrMail("login", "john@example.com")).thenReturn(true);
+        var registerUserDto = new RegisterUserRequestDTO("John Doe", "john@example.com", "password");
+        when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
 
         try{
             userService.registerUser(registerUserDto);
             fail();
         } catch(DuplicateCredentialsException exception) {}
     }
-
-//     private User createUser(String name, String mail, String login, String password) {
-//         var user = new User();
-//         user.setId(UUID.randomUUID());
-//         user.setName(name);
-//         user.setEmail(mail);
-//         user.setLogin(login);
-//         user.setPassword(new BCryptPasswordEncoder().encode(password));
-//
-//         return user;
-//     }
  }

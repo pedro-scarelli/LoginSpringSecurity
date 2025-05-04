@@ -23,8 +23,8 @@ public class AuthenticateUserService {
 
     public User authenticateLogin(LoginRequestDTO loginRequestDto){
         try {
-            var user = userService.getUserByLogin(loginRequestDto.login());
-            var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.login(), loginRequestDto.password());
+            var user = userService.getUserByEmail(loginRequestDto.email());
+            var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.email(), loginRequestDto.password());
             var auth = this.authenticationManager.authenticate(authenticationToken);
 
             if (auth.getPrincipal() instanceof UserDetails) {
