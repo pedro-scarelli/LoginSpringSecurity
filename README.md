@@ -22,11 +22,11 @@ cd LoginComSpringSecurity
 3. Já na pasta root do projeto, execute o comando
 
 ```bash
-docker-compose up`
+docker-compose up
 ```
 ou caso esteja em uma versão mais recente do docker
 ```bash
-docker compose up`
+docker compose up
 ```
 para iniciar a api.
 
