@@ -2,3 +2,5 @@ target/
 .settings/
 .vscode/
 .project
+.factorypath
+.classpath
