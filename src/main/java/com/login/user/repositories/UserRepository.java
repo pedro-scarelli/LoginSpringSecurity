@@ -8,7 +8,7 @@ import com.login.user.domain.models.User;
 import java.util.UUID;
 
 @Repository
-public interface UsersRepository extends JpaRepository<User, UUID>{
+public interface UserRepository extends JpaRepository<User, UUID>{
     User findByMail(String mail);
     User findByLogin(String login);
     boolean existsByLoginOrMail(String login, String mail);
