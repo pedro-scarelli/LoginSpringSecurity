@@ -2,13 +2,16 @@ spring:
   jpa:
     open-in-view: false
   application:
-    name: user
+    name: login
   datasource:
-    url: jdbc:postgresql://ec2-23-20-211-19.compute-1.amazonaws.com:5432/d5utv53cmjmo62
-    username: zdikjpgtxtfbdv
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:db_login}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:simple-password}
 
 api:
   security:
     token:
       secret: ${JWT_SECRET:my-secret-key}
+      expiration: ${JWT_EXPIRATION_SECONDS:7200}
+      issuer: ${JWT_ISSUER:login-api}
+
