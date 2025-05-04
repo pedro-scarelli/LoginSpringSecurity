@@ -16,7 +16,6 @@ git clone https://github.com/pedro-scarelli/LoginSpringSecurity.git
 cd LoginSpringSecurity
 ```
 3. Já na pasta root do projeto, execute o comando
-
 ```bash
 docker compose up --build
 ```
