@@ -1,14 +1,14 @@
 create table users (
-    id UUID PRIMARY KEY,
-    name VARCHAR(100),
-    mail VARCHAR(100) UNIQUE,
-    login VARCHAR(50) UNIQUE,
-    password VARCHAR(100)--
+    pk_id UUID PRIMARY KEY,
+    st_name VARCHAR(100),
+    st_email VARCHAR(200) UNIQUE,
+    st_login VARCHAR(50) UNIQUE,
+    st_hashed_password VARCHAR(255)
 );
 
 --As senhas desses usuários é senha123
-INSERT INTO users (id, name, mail, login, password) 
-VALUES 
+INSERT INTO users (pk_id, st_name, st_email, st_login, st_hashed_password)
+VALUES
     ('d8311b34-5b8b-46b3-8556-5a78f46e39ae', 'João', 'joao@example.com', 'joao123', '$2a$10$aNnnXNRfFTjF3049ALYDyOs7Avrtb04o51CmkcmJ401dagdwEt/9.'),
     ('a4e38f33-ff2e-4ff0-8195-91e8794c0b6a', 'Maria', 'maria@example.com', 'maria456', '$2a$10$2WYExYdnoFpn..ZnM5RV7ufCj2zWgTZ25TeBExN44daykJgWhqrDG'),
     ('51fb2551-d796-4761-8590-f4fb688f4bdc', 'Pedro', 'pedro@example.com', 'pedro789', '$2a$10$EUTaguwy7bUlDbukJAAe.Oh12/hxL3tVgvlkpMofI9MJUjT84w6am'),
