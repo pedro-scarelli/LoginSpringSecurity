@@ -57,8 +57,8 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Não autorizado")
     })
     @GetMapping
-    public ResponseEntity<UserPaginationResponseDTO> getAllUsers(@RequestParam int page, @RequestParam int items) {
-        return ResponseEntity.ok(userService.getAllUsers(page, items));
+    public ResponseEntity<UserPaginationResponseDTO> getAllUsers(@Valid GetAllUserRequestDTO getAllUserRequestDto) {
+        return ResponseEntity.ok(userService.getAllUsers(getAllUserRequestDto.page(), getAllUserRequestDto.items()));
     }
 
     @Operation(description = "Busca um usuário pelo ID")
