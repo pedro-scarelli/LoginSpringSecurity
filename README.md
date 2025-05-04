@@ -29,7 +29,7 @@ para iniciar a api.
 ## Cadastro de Usuário
 
 ```bash
-curl --location 'http://localhost:8080/v1/users' \
+curl --location 'http://localhost:8080/v1/user' \
 --header 'Content-Type: application/json' \
 --data '{
     "name": "{NOME_DO_USUARIO}",
@@ -40,7 +40,7 @@ curl --location 'http://localhost:8080/v1/users' \
 
 ## Login
 ```bash
-curl --location 'http://localhost:8080/v1/users/login' \
+curl --location 'http://localhost:8080/v1/auth/login' \
 --header 'Content-Type: application/json' \
 --data '{
     "email": "{EMAIL_DO_USUARIO}",
@@ -53,17 +53,17 @@ curl --location 'http://localhost:8080/v1/users/login' \
 
 - O método obter todos usuários funciona com paginação, substitua o 4 pelo número da página desejado e 2 pela quantidade de itens desejados.
 ```bash
-curl --location 'localhost:8080/v1/users?page=4&items=2' \
+curl --location 'http://localhost:8080/v1/user?page=4&items=2' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
 ## Obter Usuário
 ```bash
-curl --location --globoff 'http://localhost:8080/v1/users/{ID_DO_USUARIO}' \
+curl --location --globoff 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
 ## Atualizar Usuário
 ```bash
-curl --location --globoff --request PUT 'http://localhost:8080/v1/users/{ID_DO_USUARIO}' \
+curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}' \
 --data '{
@@ -71,10 +71,9 @@ curl --location --globoff --request PUT 'http://localhost:8080/v1/users/{ID_DO_U
     "password": "{SENHA_DO_USUARIO}"
 }'
 ```
-- Se você atualizar o usuário com que fez login precisara fazer o login denovo.
 
 ## Excluir Usuário
 ```bash
-curl --location --globoff --request DELETE 'http://localhost:8080/v1/users/{ID_DO_USUARIO}' \
+curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```

@@ -6,7 +6,6 @@ services:
     build:
       context: .
     container_name: app
-    environment:
     env_file:
       - .env
     environment:

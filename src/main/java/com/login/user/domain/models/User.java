@@ -27,11 +27,13 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column (name="id")
+    @Column (name="pk_id")
     private UUID id;
+    @Column (name="st_name")
     private String name;
+    @Column (name="st_email")
     private String email;
-    private String login;
+    @Column (name="st_hashed_password")
     private String password;
 
     @Override
@@ -41,7 +43,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
