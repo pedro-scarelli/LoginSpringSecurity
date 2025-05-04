@@ -11,7 +11,7 @@ import org.springframework.lang.NonNull;
 
 import com.login.user.domain.exceptions.UnauthorizedException;
 import com.login.user.domain.models.User;
-import com.login.user.repositories.UsersRepository;
+import com.login.user.repositories.UserRepository;
 import com.login.user.services.TokenService;
 
 import jakarta.servlet.FilterChain;
@@ -26,7 +26,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Autowired
-    UsersRepository usersRepository;
+    UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -40,7 +40,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (token != null) {
             var login = tokenService.validateToken(token);
 
-            isUserAuthenticated(usersRepository.findByLogin(login));
+            isUserAuthenticated(userRepository.findByLogin(login));
         }
 
         filterChain.doFilter(request, response);
