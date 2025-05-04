@@ -13,7 +13,7 @@ User
 1. No terminal navegue até a pasta onde deseja clonar o projeto e execute os comandos
 ```bash
 git clone https://github.com/pedro-scarelli/LoginSpringSecurity.git
-cd LoginComSpringSecurity
+cd LoginSpringSecurity
 ```
 3. Já na pasta root do projeto, execute o comando
 ```bash
