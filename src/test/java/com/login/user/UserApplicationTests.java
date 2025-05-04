@@ -1,6 +1,6 @@
 package com.login.user;
 
-import com.login.user.domain.dtos.RegisterUserDto;
+import com.login.user.domain.dtos.request.*;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
@@ -37,25 +37,25 @@ class UserServiceTest {
 
     @Test
     void getUserByLogin() {
-        UUID userId = UUID.randomUUID();
-        User user = new User();
+        var userId = UUID.randomUUID();
+        var user = new User();
         user.setId(userId);
         user.setName("John Doe");
-        user.setMail("john@example.com");
+        user.setEmail("john@example.com");
         user.setLogin("login");
         user.setPassword("password");
     
         when(usersRepository.findByLogin(user.getUsername())).thenReturn(user);
     
-        User foundUser = userService.getUserByLogin(user.getUsername());   
+        var foundUser = userService.getUserByLogin(user.getUsername());   
         assertEquals(user.getName(), foundUser.getName());
-        assertEquals(user.getMail(), foundUser.getMail());
+        assertEquals(user.getEmail(), foundUser.getEmail());
         assertEquals(user.getUsername(), foundUser.getLogin());
     }
 
     @Test
     void getUserByLoginFailure(){
-        String login = "teste";
+        var login = "teste";
 
         try{
             when(userService.getUserByLogin(login)).thenReturn(null);
@@ -81,32 +81,32 @@ class UserServiceTest {
 
     @Test
     void registerUser() {
-        RegisterUserDto registerUserDto = new RegisterUserDto("John Doe", "john@example.com","login","password");
-        User user = new User();
+        var registerUserDto = new RegisterUserRequestDTO("John Doe", "john@example.com","login","password");
+        var user = new User();
         user.setId(UUID.randomUUID());
         user.setName(registerUserDto.name());
-        user.setMail(registerUserDto.mail());
+        user.setEmail(registerUserDto.email());
 		user.setLogin(registerUserDto.login());
         user.setPassword(new BCryptPasswordEncoder().encode(registerUserDto.password()));
 
 
-        when(usersRepository.findByMail(registerUserDto.mail())).thenReturn(null);
+        when(usersRepository.findByMail(registerUserDto.email())).thenReturn(null);
         when(usersRepository.save(any(User.class))).thenReturn(user);
 
-        User savedUser = userService.registerUser(registerUserDto);
+        var savedUser = userService.registerUser(registerUserDto);
 
         assertNotNull(savedUser);
         assertEquals(user.getName(), savedUser.getName());
-        assertEquals(user.getMail(), savedUser.getMail());
+        assertEquals(user.getEmail(), savedUser.getEmail());
         assertEquals(user.getUsername(), savedUser.getLogin());
     }
 
     @Test
     void registerUserFalse() {
-        RegisterUserDto registerUserDto = new RegisterUserDto("John Doe", "john@example.com","login", "password");
-        User existingUser = new User();
+        var registerUserDto = new RegisterUserRequestDTO("John Doe", "john@example.com","login", "password");
+        var existingUser = new User();
 
-        when(usersRepository.findByMail(registerUserDto.mail())).thenReturn(existingUser);
+        when(usersRepository.findByMail(registerUserDto.email())).thenReturn(existingUser);
 
         try{
             userService.registerUser(registerUserDto);
@@ -118,26 +118,25 @@ class UserServiceTest {
 
     @Test
     void updateUser() {
-        UUID userId = UUID.randomUUID();
-        RegisterUserDto updatedUserDto = new RegisterUserDto("Updated Name", "updated@example.com", "logi", "updatedpassword");
-        User existingUser = createUser("John Doe", "john@example.com","login", "password");
+        var userId = UUID.randomUUID();
+        var updatedUserDto = new UpdateUserRequestDTO("Updated Name", "updatedpassword");
+        var existingUser = createUser("John Doe", "john@example.com","login", "password");
 
         when(usersRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(usersRepository.save(any(User.class))).thenReturn(existingUser);
 
-        User updatedUser = userService.updateUser(userId, updatedUserDto);
+        var updatedUser = userService.updateUser(userId, updatedUserDto);
 
         assertEquals(updatedUserDto.name(), updatedUser.getName());
-        assertEquals(updatedUserDto.mail(), updatedUser.getMail());
     }
 
     @Test
     void updateUserFailure() {
-        UUID userId = UUID.randomUUID();
+        var userId = UUID.randomUUID();
     
         when(usersRepository.findById(userId)).thenReturn(Optional.empty());
 
-        RegisterUserDto updatedUserDto = null;
+        UpdateUserRequestDTO updatedUserDto = null;
         try{
             userService.updateUser(userId, updatedUserDto);
             fail();
@@ -148,22 +147,22 @@ class UserServiceTest {
 
     @Test
     void deleteUser() {
-        UUID userId = UUID.randomUUID();
-        User existingUser = createUser("John Doe", "john@example.com", "login", "password");
+        var userId = UUID.randomUUID();
+        var existingUser = createUser("John Doe", "john@example.com", "login", "password");
     
         when(usersRepository.findById(userId)).thenReturn(Optional.of(existingUser));
     
-        User deletedUserDto = userService.deleteUser(userId);
+        var deletedUserDto = userService.deleteUser(userId);
     
         assertEquals(existingUser.getName(), deletedUserDto.getName());
-        assertEquals(existingUser.getMail(), deletedUserDto.getMail());
+        assertEquals(existingUser.getEmail(), deletedUserDto.getEmail());
         assertEquals(existingUser.getLogin(), deletedUserDto.getLogin());
         assertEquals(existingUser.getPassword(), deletedUserDto.getPassword());
     }
 
     @Test
     void deleteUserFailure() {
-        UUID userId = UUID.randomUUID();
+        var userId = UUID.randomUUID();
 
         when(usersRepository.findById(userId)).thenReturn(Optional.empty());
 
@@ -177,12 +176,13 @@ class UserServiceTest {
 
 
     private User createUser(String name, String mail, String login, String password) {
-        User user = new User();
+        var user = new User();
         user.setId(UUID.randomUUID());
         user.setName(name);
-        user.setMail(mail);
+        user.setEmail(mail);
         user.setLogin(login);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
+
         return user;
     }
 }

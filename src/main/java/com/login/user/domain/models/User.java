@@ -14,13 +14,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @Entity
-@Table(name="users")
+@Table(name="tb_users")
 public class User implements UserDetails {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -28,10 +30,10 @@ public class User implements UserDetails {
     @Column (name="id")
     private UUID id;
     private String name;
-    private String mail;
+    private String email;
     private String login;
     private String password;
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
@@ -56,7 +58,7 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-    
+
     @Override
     public boolean isEnabled() {
         return true;

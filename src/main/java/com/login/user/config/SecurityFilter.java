@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.lang.NonNull;
 
 import com.login.user.domain.exceptions.UnauthorizedException;
 import com.login.user.domain.models.User;
@@ -28,7 +29,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     UsersRepository usersRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+        )
             throws ServletException, IOException {
         var token = this.recoverToken(request);
 
