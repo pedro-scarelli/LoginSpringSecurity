@@ -43,8 +43,8 @@ public class User implements UserDetails {
     @Column (name="bl_is_active")
     private boolean isActive;
 
-    @Column (name="it_otp_code")
-    private Integer otpCode;
+    @Column (name="st_otp_code")
+    private String otpCode;
 
     @Column (name="dt_otp_timestamp")
     private Instant otpTimestamp;

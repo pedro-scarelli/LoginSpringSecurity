@@ -1,5 +1,6 @@
 package com.login.user.services;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.login.user.domain.dtos.request.LoginRequestDTO;
 import com.login.user.domain.exceptions.IncorrectCredentialsException;
+import com.login.user.domain.exceptions.UnauthorizedException;
 import com.login.user.domain.exceptions.UserNotActivatedException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
@@ -56,7 +58,7 @@ public class AuthenticationService {
         }
     }
 
-    public void redefinePassword(UUID userId) {
+    public void activateRedefinePassword(UUID userId) {
         var user = userService.getUserById(userId);
         var otpCode = generateRandomFourDigitsNumber();
         user.setOtpCode(otpCode);
@@ -66,10 +68,27 @@ public class AuthenticationService {
         emailService.sendRedefinePasswordEmail(user.getEmail(), otpCode);
     }
 
-    public int generateRandomFourDigitsNumber() {
+    public String generateRandomFourDigitsNumber() {
         var random = new Random();
+        var randomFourDigitsNumber = 1000 + random.nextInt(9000);
 
-        return 1000 + random.nextInt(9000);
+        return Integer.toString(randomFourDigitsNumber);
+    }
+
+    public void redefinePassword(String otpCode, String newPassword, UUID userId) {
+        var user = userService.getUserById(userId);
+        isRedefinePasswordAuthorized(user, otpCode);
+ 
+        user.setPassword(userService.encodePassword(newPassword));
+        userService.save(user);
+    }
+
+    public void isRedefinePasswordAuthorized(User user, String otpCode) {
+        var otpExpiry = user.getOtpTimestamp().plus(Duration.ofMinutes(5));
+
+        if (!user.getOtpCode().equals(otpCode) || Instant.now().isAfter(otpExpiry)) {
+            throw new UnauthorizedException("Redefinição de senha não autorizada");
+        }
     }
 }
 

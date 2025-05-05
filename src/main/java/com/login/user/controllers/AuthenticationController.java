@@ -4,12 +4,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.login.user.domain.dtos.request.LoginRequestDTO;
+import com.login.user.domain.dtos.request.RedefinePasswordRequestDTO;
 import com.login.user.domain.dtos.request.UUIDRequestDTO;
 import com.login.user.services.AuthenticationService;
 import com.login.user.services.TokenService;
@@ -50,10 +52,27 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "200", description = "Código OTP enviado para o e-mail"),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
-    @PostMapping("/redefine-password")
+    @PostMapping("/redefine-password/activate")
     public ResponseEntity<Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid UUIDRequestDTO uuidRequestDto) {
-        authenticationService.redefinePassword(uuidRequestDto.id());
+        authenticationService.activateRedefinePassword(uuidRequestDto.id());
         var response = Map.of("message", "Código para redefinição de senha enviado");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(description = "Redefine a senha de um usuário")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Senha redefinida"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @PatchMapping("/redefine-password")
+    public ResponseEntity<Map<String, String>> redefinePassword(@RequestBody @Valid RedefinePasswordRequestDTO redefinePasswordRequestDto) {
+        authenticationService.redefinePassword(
+                redefinePasswordRequestDto.otpCode(),
+                redefinePasswordRequestDto.newPassword(),
+                redefinePasswordRequestDto.userId()
+            );
+        var response = Map.of("message", "Senha redefinida com sucesso");
 
         return ResponseEntity.ok(response);
     }

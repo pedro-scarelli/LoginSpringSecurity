@@ -76,3 +76,22 @@ curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_
 curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
+
+## Ativar redefinição de senha
+```bash
+curl --location 'http://localhost:8080/v1/auth/redefine-password/activate' \
+--header 'Content-Type: application/json' \
+--data '{
+    "id": "{ID_DO_USUARIO}"
+}'
+```
+## Redefinir senha
+```bash
+curl --location 'http://localhost:8080/v1/auth/redefine-password/activate' \
+--header 'Content-Type: application/json' \
+--data '{
+    "otpCode": "{CODIGO_OTP}",
+    "newPassword": "{NEW_PASSWORD}",
+    "userId": "{ID_DO_USUARIO}"
+}'
+```

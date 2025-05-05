@@ -130,7 +130,7 @@ public class UserService implements UserDetailsService {
             .build();
     }
 
-    private String encodePassword(String password) {
+    public String encodePassword(String password) {
         var passwordEncoder = new BCryptPasswordEncoder();
 
         return passwordEncoder.encode(password);

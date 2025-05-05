@@ -45,9 +45,9 @@ public class EmailService {
         }
     }
 
-    public void sendRedefinePasswordEmail(String to, int otpCode) {
+    public void sendRedefinePasswordEmail(String to, String otpCode) {
         try {
-            sendHtmlEmail(to, "Redefinição de senha", redefinePasswordEmailBody.of(Integer.toString(otpCode)));
+            sendHtmlEmail(to, "Redefinição de senha", redefinePasswordEmailBody.of(otpCode));
         } catch (MessagingException e) {
             throw new EmailMessagingException("Erro ao enviar e-mail de redefinição de senha");
         }
