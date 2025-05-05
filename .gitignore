@@ -4,4 +4,3 @@ target/
 .project
 .factorypath
 .classpath
-.env
