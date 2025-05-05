@@ -28,11 +28,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
 
     public UserPaginationResponseDTO getAllUsers(int page, int items) {
         var users = userRepository.findAll(PageRequest.of(page - 1, items));
         var usersResponseDto = StreamSupport.stream(users.spliterator(), false)
-            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail()))
+            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.isActive()))
             .collect(Collectors.toList());
 
         return new UserPaginationResponseDTO(
@@ -66,12 +68,14 @@ public class UserService implements UserDetailsService {
     public User registerUser(RegisterUserRequestDTO registerUserRequestDto) {
         var newUser = new User();
         BeanUtils.copyProperties(registerUserRequestDto, newUser);
+        newUser.setActive(false);
 
         isUserCredentialsDuplicated(newUser.getEmail());
 
         var hashedPassword = new BCryptPasswordEncoder().encode(newUser.getPassword());
         newUser.setPassword(hashedPassword);
         userRepository.save(newUser);
+        emailService.sendSignUpEmail(newUser.getEmail(), newUser.getId());
 
         return newUser;
     }
@@ -100,6 +104,12 @@ public class UserService implements UserDetailsService {
         userRepository.delete(userToDelete);
 
         return userToDelete;
+    }
+
+    public void activateUser(UUID id) {
+        var userToActivate = getUserById(id);
+        userToActivate.setActive(true);
+        userRepository.save(userToActivate);
     }
 
     @Override

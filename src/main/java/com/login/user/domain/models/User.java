@@ -29,12 +29,18 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column (name="pk_id")
     private UUID id;
+
     @Column (name="st_name")
     private String name;
+ 
     @Column (name="st_email")
     private String email;
+
     @Column (name="st_hashed_password")
     private String password;
+
+    @Column (name="bl_is_active")
+    private boolean isActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,13 +1,11 @@
 package com.login.user.domain.exceptions;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,30 +19,44 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     private ResponseEntity<Map<String, String>> userNotFoundHandler(UserNotFoundException exception){
-        Map<String, String> errors = Map.of("message", exception.getMessage());
+        var errors = Map.of("message", exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
 
     @ExceptionHandler(DuplicateCredentialsException.class)
     private ResponseEntity<Map<String, String>> duplicateCredentialsHandler(DuplicateCredentialsException exception){
-        Map<String, String> errors = Map.of("message", exception.getMessage());
+        var errors = Map.of("message", exception.getMessage());
  
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler(IncorrectCredentialsException.class)
     private ResponseEntity<Map<String, String>> incorrectCredentialsHandler(IncorrectCredentialsException exception){
-        Map<String, String> errors = Map.of("message", exception.getMessage());
+        var errors = Map.of("message", exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     private ResponseEntity<Map<String, String>> unauthorizedExceptionHandler(UnauthorizedException exception){
-        Map<String, String> errors = Map.of("message", exception.getMessage());
+        var errors = Map.of("message", exception.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
+    }
+
+    @ExceptionHandler(UserNotActivatedException.class)
+    private ResponseEntity<Map<String, String>> userNotActivatedExceptionHandler(UserNotActivatedException exception){
+        var errors = Map.of("message", exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
+    }
+
+    @ExceptionHandler(EmailMessagingException.class)
+    private ResponseEntity<Map<String, String>> emailMessagingExceptionHandler(EmailMessagingException exception){
+        var errors = Map.of("message", exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
     }
 
     @Override
