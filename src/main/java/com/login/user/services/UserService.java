@@ -56,6 +56,10 @@ public class UserService implements UserDetailsService {
         throw new UserNotFoundException();
     }
 
+    public void save(User userToSave) {
+        userRepository.save(userToSave);
+    }
+
     public User getUserByEmail(String email) {
         var userFound = userRepository.findByEmail(email);
         if(userFound == null){

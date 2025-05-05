@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.login.user.domain.exceptions.EmailMessagingException;
 import com.login.user.utils.ActivateUserEmailBody;
+import com.login.user.utils.RedefinePasswordEmailBody;
 
 import jakarta.mail.MessagingException;
 
@@ -20,6 +21,9 @@ public class EmailService {
 
     @Autowired
     private ActivateUserEmailBody activateUserEmailBody;
+
+    @Autowired
+    private RedefinePasswordEmailBody redefinePasswordEmailBody;
 
     public void sendHtmlEmail(String to, String subject, String htmlBody) throws MessagingException {
         var message = mailSender.createMimeMessage();
@@ -38,6 +42,14 @@ public class EmailService {
             sendHtmlEmail(to, "Ativação de usuário", activateUserEmailBody.of(userId.toString()));
         } catch (MessagingException e) {
             throw new EmailMessagingException("Erro ao enviar e-mail de ativação de usuário");
+        }
+    }
+
+    public void sendRedefinePasswordEmail(String to, int otpCode) {
+        try {
+            sendHtmlEmail(to, "Redefinição de senha", redefinePasswordEmailBody.of(Integer.toString(otpCode)));
+        } catch (MessagingException e) {
+            throw new EmailMessagingException("Erro ao enviar e-mail de redefinição de senha");
         }
     }
 }
