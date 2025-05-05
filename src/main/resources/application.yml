@@ -7,6 +7,17 @@ spring:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:db_login}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:simple-password}
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 api:
   security:
@@ -14,4 +25,5 @@ api:
       secret: ${JWT_SECRET:my-secret-key}
       expiration: ${JWT_EXPIRATION_SECONDS:7200}
       issuer: ${JWT_ISSUER:login-api}
+  base-url: ${API_BASE_URL:http://localhost:8080}
 
