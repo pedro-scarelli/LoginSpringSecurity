@@ -2,12 +2,15 @@ package com.login.user.utils;
 
 import java.util.Objects;
 
-public final class ForgotPasswordEmailBody {
+import org.springframework.stereotype.Component;
+
+@Component
+public class RedefinePasswordEmailBody {
 
     private static final String TEMPLATE = """
         <div style="background-color: rgb(245, 245, 245); margin: 0; padding: 20px 0;">
           <div style="max-width: 600px; margin: 0 auto;">
-            <table style="width:100%;background:#fff;border-radius:8px;border-collapse:separate;">
+            <table style="width:100%%;background:#fff;border-radius:8px;border-collapse:separate;">
               <tr>
                 <td style="background-color: #1A237E; padding: 24px 32px; border-radius:8px 8px 0 0; text-align:center;">
                   <h1 style="color:#fff; margin:0; font-weight:700; font-size:24px; line-height:1.5;">
@@ -47,10 +50,9 @@ public final class ForgotPasswordEmailBody {
         </div>
         """;
 
-    private ForgotPasswordEmailBody() {}
+    public String of(String otpCode) {
+        Objects.requireNonNull(otpCode, "userId não pode ser nulo");
 
-    public static String of(String token) {
-        Objects.requireNonNull(token, "token não pode ser nulo");
-        return String.format(TEMPLATE, token);
+        return String.format(TEMPLATE, otpCode);
     }
 }

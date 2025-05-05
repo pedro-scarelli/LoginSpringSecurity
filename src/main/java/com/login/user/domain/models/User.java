@@ -1,5 +1,6 @@
 package com.login.user.domain.models;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +42,12 @@ public class User implements UserDetails {
 
     @Column (name="bl_is_active")
     private boolean isActive;
+
+    @Column (name="it_otp_code")
+    private Integer otpCode;
+
+    @Column (name="dt_otp_timestamp")
+    private Instant otpTimestamp;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

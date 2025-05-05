@@ -1,5 +1,9 @@
 package com.login.user.services;
 
+import java.time.Instant;
+import java.util.Random;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,13 +18,16 @@ import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
 
 @Service
-public class AuthenticateUserService {
+public class AuthenticationService {
  
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     public User authenticateLogin(LoginRequestDTO loginRequestDto){
         try {
@@ -47,6 +54,22 @@ public class AuthenticateUserService {
         if (!user.isActive()) {
             throw new UserNotActivatedException();
         }
+    }
+
+    public void redefinePassword(UUID userId) {
+        var user = userService.getUserById(userId);
+        var otpCode = generateRandomFourDigitsNumber();
+        user.setOtpCode(otpCode);
+        user.setOtpTimestamp(Instant.now());
+        userService.save(user);
+
+        emailService.sendRedefinePasswordEmail(user.getEmail(), otpCode);
+    }
+
+    public int generateRandomFourDigitsNumber() {
+        var random = new Random();
+
+        return 1000 + random.nextInt(9000);
     }
 }
 

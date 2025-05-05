@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.login.user.domain.dtos.request.LoginRequestDTO;
-import com.login.user.services.AuthenticateUserService;
+import com.login.user.domain.dtos.request.UUIDRequestDTO;
+import com.login.user.services.AuthenticationService;
 import com.login.user.services.TokenService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,7 @@ import jakarta.validation.Valid;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticateUserService authenticateUserService;
+    private AuthenticationService authenticationService;
 
     @Autowired
     private TokenService tokenService;
@@ -36,10 +37,23 @@ public class AuthenticationController {
     })
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequestDTO loginRequestDto) {
-        var authenticatedUser = authenticateUserService.authenticateLogin(loginRequestDto);
+        var authenticatedUser = authenticationService.authenticateLogin(loginRequestDto);
         var token = tokenService.generateToken(authenticatedUser);
 
         var response = Map.of("message", "Login efetuado com sucesso", "jwtAuthenticationToken", token);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(description = "Ativa a redefinição de senha para um usuário")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Código OTP enviado para o e-mail"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @PostMapping("/redefine-password")
+    public ResponseEntity<Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid UUIDRequestDTO uuidRequestDto) {
+        authenticationService.redefinePassword(uuidRequestDto.id());
+        var response = Map.of("message", "Código para redefinição de senha enviado");
 
         return ResponseEntity.ok(response);
     }
