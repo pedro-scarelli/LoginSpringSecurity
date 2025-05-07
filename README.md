@@ -1,5 +1,3 @@
-User
-
 # Instruções de configuração
 
 ## Pré-requisitos
@@ -38,6 +36,7 @@ curl --location --request POST 'http://localhost:8080/v1/user' \
 }'
 ```
 ***Esse método envia um e-mail para ativar o seu usuário***
+![Screenshot From 2025-05-07 19-09-07](https://github.com/user-attachments/assets/512f464a-dee8-4265-b9ae-5c91f74d7daa)
 
 ## Ativar usuário
 
@@ -99,7 +98,7 @@ curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO
 ```
 
 ## Ativar redefinição de senha
-
+### Esse endpoint ativa a redefinição de senha para um usuário
 ```bash
 curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/activate' \
 --header 'Content-Type: application/json' \
@@ -107,6 +106,8 @@ curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/
     "email": "{EMAIL_DO_USUARIO}"
 }'
 ```
+***Após chamada ao endpoint será vai enviar um e-mail para o usuário de e-mail passado como parâmetro contendo o código pra redefinição de senha***
+![Screenshot From 2025-05-07 19-10-34](https://github.com/user-attachments/assets/6201f6af-e628-4d66-b8e3-c4344ac99455)
 
 ## Redefinir senha
 
