@@ -8,10 +8,10 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:simple-password}
   mail:
-    host: ${SMTP_HOST}
-    port: ${SMTP_PORT}
-    username: ${SMTP_USER}
-    password: ${SMTP_PASS}
+    host: ${SMTP_HOST:smtp.mailgun.org}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:login-api@pedroscarelli.com}
+    password: ${SMTP_PASS:simple-pass}
     properties:
       mail:
         smtp:

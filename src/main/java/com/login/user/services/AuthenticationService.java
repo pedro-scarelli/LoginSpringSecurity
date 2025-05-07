@@ -3,7 +3,6 @@ package com.login.user.services;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,8 +57,8 @@ public class AuthenticationService {
         }
     }
 
-    public void activateRedefinePassword(UUID userId) {
-        var user = userService.getUserById(userId);
+    public void activateRedefinePassword(String email) {
+        var user = userService.getUserByEmail(email);
         var otpCode = generateRandomFourDigitsNumber();
         user.setOtpCode(otpCode);
         user.setOtpTimestamp(Instant.now());
@@ -75,8 +74,8 @@ public class AuthenticationService {
         return Integer.toString(randomFourDigitsNumber);
     }
 
-    public void redefinePassword(String otpCode, String newPassword, UUID userId) {
-        var user = userService.getUserById(userId);
+    public void redefinePassword(String otpCode, String newPassword, String email) {
+        var user = userService.getUserByEmail(email);
         isRedefinePasswordAuthorized(user, otpCode);
  
         user.setPassword(userService.encodePassword(newPassword));

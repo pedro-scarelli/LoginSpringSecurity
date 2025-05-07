@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.login.user.domain.dtos.request.LoginRequestDTO;
-import com.login.user.domain.dtos.request.RedefinePasswordRequestDTO;
-import com.login.user.domain.dtos.request.UUIDRequestDTO;
+import com.login.user.domain.dtos.request.*;
 import com.login.user.services.AuthenticationService;
 import com.login.user.services.TokenService;
 
@@ -53,8 +51,8 @@ public class AuthenticationController {
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @PostMapping("/redefine-password/activate")
-    public ResponseEntity<Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid UUIDRequestDTO uuidRequestDto) {
-        authenticationService.activateRedefinePassword(uuidRequestDto.id());
+    public ResponseEntity<Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid EmailRequestDTO emailRequestDto) {
+        authenticationService.activateRedefinePassword(emailRequestDto.email());
         var response = Map.of("message", "Código para redefinição de senha enviado");
 
         return ResponseEntity.ok(response);
@@ -70,7 +68,7 @@ public class AuthenticationController {
         authenticationService.redefinePassword(
                 redefinePasswordRequestDto.otpCode(),
                 redefinePasswordRequestDto.newPassword(),
-                redefinePasswordRequestDto.userId()
+                redefinePasswordRequestDto.email()
             );
         var response = Map.of("message", "Senha redefinida com sucesso");
 
