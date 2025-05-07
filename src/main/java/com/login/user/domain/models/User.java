@@ -1,19 +1,15 @@
 package com.login.user.domain.models;
 
+import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.login.user.domain.models.enums.UserRole;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,21 +25,42 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column (name="pk_id")
     private UUID id;
-    @Column (name="st_name")
+
+    @Column (name="st_name", nullable = false)
     private String name;
-    @Column (name="st_email")
+ 
+    @Column (name="st_email", nullable = false)
     private String email;
-    @Column (name="st_hashed_password")
+
+    @Column (name="st_hashed_password", nullable = false)
     private String password;
+
+    @Enumerated(EnumType.ORDINAL) 
+    @Column (name="it_role", nullable = false)
+    private UserRole role;
+
+    @Column (name="bl_is_enabled", nullable = false)
+    private boolean isEnabled;
+
+    @Column (name="st_otp_code")
+    private String otpCode;
+
+    @Column (name="dt_otp_timestamp")
+    private Instant otpTimestamp;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        return role.getAuthorities();
     }
 
     @Override
     public String getUsername() {
         return email;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
     }
 
     @Override
@@ -58,11 +75,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }

@@ -5,15 +5,13 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.login.user.domain.dtos.request.*;
 import com.login.user.domain.dtos.response.*;
-import com.login.user.domain.exceptions.UnauthorizedException;
-import com.login.user.domain.models.User;
 import com.login.user.services.UserService;
 import com.login.user.utils.ValidationUtils;
 
@@ -35,12 +33,12 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "Retorna os erros do formulário caso tenha algum campo inválido, ou retorna junto a mensagem \"E-mail ou login duplicado\"")
     })
     @PostMapping()
-    public ResponseEntity<Object> registerUser(@Valid @RequestBody RegisterUserRequestDTO registerUserRequestDto, BindingResult result) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ValidationUtils.validationErrors(result));
         }
 
-        var newUser = userService.registerUser(registerUserRequestDto);
+        var newUser = userService.createUser(createUserRequestDto);
         var location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
@@ -51,6 +49,7 @@ public class UserController {
         return ResponseEntity.created(location).body(message);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Busca todos os usuários")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Retorna todos os usuários"),
@@ -70,7 +69,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var userFound = userService.getUserById(id);
-        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail());
+        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail(), userFound.isEnabled());
 
         return ResponseEntity.ok(userResponseDto);
     }
@@ -87,7 +86,7 @@ public class UserController {
             BindingResult result) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var updatedUser = userService.updateUser(id, updateUserRequestDto);
-        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail());
+        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail(), updatedUser.isEnabled());
 
         return ResponseEntity.ok().body(userDto);
     }
@@ -98,11 +97,23 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable("id") UUID id) {
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable("id") UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var deletedUser = userService.deleteUser(id);
-        Map<String, String> message = Map.of("message", "Usuário " + deletedUser.getName() + " deletado com sucesso!");
+        Map<String, Object> message = Map.of("message", "Usuário deletado com sucesso", "userId", deletedUser.getId());
 
         return ResponseEntity.ok().body(message);
+    }
+
+    @Operation(description = "Ativa um usuário pelo link mandado pelo e-mail")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Usuário ativado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @GetMapping("/activate/{id}")
+    public ResponseEntity<Void> activateUser(@PathVariable("id") UUID id) {
+        userService.activateUser(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

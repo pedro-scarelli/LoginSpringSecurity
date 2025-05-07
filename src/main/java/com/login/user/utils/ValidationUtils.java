@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 
 import com.login.user.domain.exceptions.UnauthorizedException;
 import com.login.user.domain.models.User;
+import com.login.user.domain.models.enums.UserRole;
 
 public final class ValidationUtils {
 
@@ -31,8 +32,8 @@ public final class ValidationUtils {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         User userFromToken = (User) authentication.getPrincipal();
 
-        if (!userFromToken.getId().equals(targetId)) {
-            throw new UnauthorizedException("Acesso negado");
+        if (!userFromToken.getId().equals(targetId) && userFromToken.getRole() != UserRole.ADMIN) {
+            throw new UnauthorizedException("Você não tem permissão para acessar este recurso");
         }
     }
 }

@@ -13,13 +13,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.login.user.domain.dtos.request.RegisterUserRequestDTO;
+import com.login.user.domain.dtos.request.CreateUserRequestDTO;
 import com.login.user.domain.dtos.request.UpdateUserRequestDTO;
 import com.login.user.domain.dtos.response.UserPaginationResponseDTO;
 import com.login.user.domain.dtos.response.UserResponseDTO;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
+import com.login.user.domain.models.enums.UserRole;
 import com.login.user.repositories.UserRepository;
 
 @Service
@@ -28,11 +29,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
 
     public UserPaginationResponseDTO getAllUsers(int page, int items) {
         var users = userRepository.findAll(PageRequest.of(page - 1, items));
         var usersResponseDto = StreamSupport.stream(users.spliterator(), false)
-            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail()))
+            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.isEnabled()))
             .collect(Collectors.toList());
 
         return new UserPaginationResponseDTO(
@@ -54,6 +57,10 @@ public class UserService implements UserDetailsService {
         throw new UserNotFoundException();
     }
 
+    public void save(User userToSave) {
+        userRepository.save(userToSave);
+    }
+
     public User getUserByEmail(String email) {
         var userFound = userRepository.findByEmail(email);
         if(userFound == null){
@@ -63,15 +70,18 @@ public class UserService implements UserDetailsService {
         return userFound;
     }
 
-    public User registerUser(RegisterUserRequestDTO registerUserRequestDto) {
+    public User createUser(CreateUserRequestDTO createUserRequestDto) {
         var newUser = new User();
-        BeanUtils.copyProperties(registerUserRequestDto, newUser);
+        BeanUtils.copyProperties(createUserRequestDto, newUser);
+        newUser.setEnabled(false);
 
         isUserCredentialsDuplicated(newUser.getEmail());
 
         var hashedPassword = new BCryptPasswordEncoder().encode(newUser.getPassword());
         newUser.setPassword(hashedPassword);
+        newUser.setRole(UserRole.USER);
         userRepository.save(newUser);
+        emailService.sendSignUpEmail(newUser.getEmail(), newUser.getId());
 
         return newUser;
     }
@@ -102,6 +112,12 @@ public class UserService implements UserDetailsService {
         return userToDelete;
     }
 
+    public void activateUser(UUID id) {
+        var userToActivate = getUserById(id);
+        userToActivate.setEnabled(true);
+        userRepository.save(userToActivate);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(email);
@@ -116,7 +132,7 @@ public class UserService implements UserDetailsService {
             .build();
     }
 
-    private String encodePassword(String password) {
+    public String encodePassword(String password) {
         var passwordEncoder = new BCryptPasswordEncoder();
 
         return passwordEncoder.encode(password);

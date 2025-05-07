@@ -4,13 +4,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.login.user.domain.dtos.request.LoginRequestDTO;
-import com.login.user.services.AuthenticateUserService;
+import com.login.user.domain.dtos.request.*;
+import com.login.user.services.AuthenticationService;
 import com.login.user.services.TokenService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,7 @@ import jakarta.validation.Valid;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticateUserService authenticateUserService;
+    private AuthenticationService authenticationService;
 
     @Autowired
     private TokenService tokenService;
@@ -36,10 +37,40 @@ public class AuthenticationController {
     })
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequestDTO loginRequestDto) {
-        var authenticatedUser = authenticateUserService.authenticateLogin(loginRequestDto);
+        var authenticatedUser = authenticationService.authenticateLogin(loginRequestDto);
         var token = tokenService.generateToken(authenticatedUser);
 
         var response = Map.of("message", "Login efetuado com sucesso", "jwtAuthenticationToken", token);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(description = "Ativa a redefinição de senha para um usuário")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Código OTP enviado para o e-mail"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @PostMapping("/redefine-password/activate")
+    public ResponseEntity<Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid EmailRequestDTO emailRequestDto) {
+        authenticationService.activateRedefinePassword(emailRequestDto.email());
+        var response = Map.of("message", "Código para redefinição de senha enviado");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(description = "Redefine a senha de um usuário")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Senha redefinida"),
+        @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @PatchMapping("/redefine-password")
+    public ResponseEntity<Map<String, String>> redefinePassword(@RequestBody @Valid RedefinePasswordRequestDTO redefinePasswordRequestDto) {
+        authenticationService.redefinePassword(
+                redefinePasswordRequestDto.otpCode(),
+                redefinePasswordRequestDto.newPassword(),
+                redefinePasswordRequestDto.email()
+            );
+        var response = Map.of("message", "Senha redefinida com sucesso");
 
         return ResponseEntity.ok(response);
     }

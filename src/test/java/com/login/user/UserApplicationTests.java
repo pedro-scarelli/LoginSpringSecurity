@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.login.user.domain.dtos.request.RegisterUserRequestDTO;
+import com.login.user.domain.dtos.request.CreateUserRequestDTO;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.repositories.UserRepository;
@@ -55,11 +55,11 @@ class UserServiceTest {
 
     @Test
     void registerDuplicatedUserCredentialsShouldThrowDuplicatedCredentialsException() {
-        var registerUserDto = new RegisterUserRequestDTO("John Doe", "john@example.com", "password");
+        var createUserDto = new CreateUserRequestDTO("John Doe", "john@example.com", "password");
         when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
 
         try{
-            userService.registerUser(registerUserDto);
+            userService.createUser(createUserDto);
             fail();
         } catch(DuplicateCredentialsException exception) {}
     }
