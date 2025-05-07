@@ -158,7 +158,3 @@ Content-Type: application/json
 ![OTP para redefinição de senha](https://github.com/user-attachments/assets/6201f6af-e628-4d66-b8e3-c4344ac99455)
 
 ---
-
-## 📄 Licença
-
-Este projeto está licenciado sob a [MIT License](LICENSE).
