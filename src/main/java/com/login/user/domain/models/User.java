@@ -5,19 +5,13 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.login.user.domain.models.enums.UserRole;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +19,7 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(name="tb_users")
+@SQLRestriction("dt_deleted_at IS NULL")
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;

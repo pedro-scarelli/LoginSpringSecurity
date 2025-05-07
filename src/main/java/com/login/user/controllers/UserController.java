@@ -69,7 +69,15 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var userFound = userService.getUserById(id);
-        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail(), userFound.isEnabled());
+        var userResponseDto = new UserResponseDTO(
+                userFound.getId(),
+                userFound.getName(),
+                userFound.getEmail(),
+                userFound.isEnabled(),
+                userFound.getRole(),
+                userFound.getCreatedAt(),
+                userFound.getDeletedAt()
+            );
 
         return ResponseEntity.ok(userResponseDto);
     }
@@ -86,7 +94,15 @@ public class UserController {
             BindingResult result) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var updatedUser = userService.updateUser(id, updateUserRequestDto);
-        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail(), updatedUser.isEnabled());
+        var userDto = new UserResponseDTO(
+                updatedUser.getId(),
+                updatedUser.getName(),
+                updatedUser.getEmail(),
+                updatedUser.isEnabled(),
+                updatedUser.getRole(),
+                updatedUser.getCreatedAt(),
+                updatedUser.getDeletedAt()
+            );
 
         return ResponseEntity.ok().body(userDto);
     }

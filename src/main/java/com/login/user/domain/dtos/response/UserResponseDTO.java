@@ -1,6 +1,16 @@
 package com.login.user.domain.dtos.response;
 
+import java.time.Instant;
 import java.util.UUID;
-import jakarta.validation.constraints.NotBlank;
 
-public record UserResponseDTO(UUID id, @NotBlank String name, @NotBlank String email, boolean isEnabled) {}
+import com.login.user.domain.models.enums.UserRole;
+
+public record UserResponseDTO(
+        UUID id,
+        String name,
+        String email,
+        boolean isEnabled,
+        UserRole role,
+        Instant createdAt,
+        Instant deletedAt
+    ) { }

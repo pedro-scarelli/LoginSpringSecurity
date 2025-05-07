@@ -80,6 +80,7 @@ public class AuthenticationService {
  
         user.setPassword(userService.encodePassword(newPassword));
         user.setOtpCode(null);
+        user.setOtpTimestamp(null);
         userService.save(user);
     }
 

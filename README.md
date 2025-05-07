@@ -1,6 +1,6 @@
 User
 
-# Instruções de Configuração
+# Instruções de configuração
 
 ## Pré-requisitos
 
@@ -8,7 +8,7 @@ User
 - Docker Compose
 - Git
 
-## Inicialização do Servidor
+## Inicialização do servidor
 
 1. No terminal navegue até a pasta onde deseja clonar o projeto e execute os comandos
 
@@ -37,6 +37,7 @@ curl --location --request POST 'http://localhost:8080/v1/user' \
     "password": "{SENHA_DO_USUARIO}"
 }'
 ```
+***Esse método envia um e-mail para ativar o seu usuário***
 
 ## Ativar usuário
 
@@ -58,7 +59,7 @@ curl --location --request POST 'http://localhost:8080/v1/auth/login' \
 
 ### Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
 
-## Obter Todos os Usuários
+## Obter todos os usuários
 
 ### ROTA PARA ADMINS
 
@@ -69,14 +70,14 @@ curl --location --request GET 'http://localhost:8080/v1/user?page=4&items=2' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
 
-## Obter Usuário
+## Obter usuário
 
 ```bash
 curl --location --globoff --request GET 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
 
-## Atualizar Usuário
+## Atualizar usuário
 
 ```bash
 curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
@@ -88,7 +89,9 @@ curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_
 }'
 ```
 
-## Excluir Usuário
+## Deletar usuário
+
+### O usuário apenas vai ser marcada como deletado e excluido das próximas buscas.
 
 ```bash
 curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
@@ -101,7 +104,7 @@ curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO
 curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/activate' \
 --header 'Content-Type: application/json' \
 --data '{
-    "id": "{ID_DO_USUARIO}"
+    "email": "{EMAIL_DO_USUARIO}"
 }'
 ```
 

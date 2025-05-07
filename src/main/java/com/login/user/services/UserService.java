@@ -36,7 +36,16 @@ public class UserService implements UserDetailsService {
     public UserPaginationResponseDTO getAllUsers(int page, int items) {
         var users = userRepository.findAll(PageRequest.of(page - 1, items));
         var usersResponseDto = StreamSupport.stream(users.spliterator(), false)
-            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.isEnabled()))
+            .map(user -> new UserResponseDTO(
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.isEnabled(),
+                    user.getRole(),
+                    user.getCreatedAt(),
+                    user.getDeletedAt()
+                )
+            )
             .collect(Collectors.toList());
 
         return new UserPaginationResponseDTO(
