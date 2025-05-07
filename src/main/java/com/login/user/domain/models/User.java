@@ -4,12 +4,20 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.login.user.domain.models.enums.UserRole;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,6 +46,13 @@ public class User implements UserDetails {
     @Enumerated(EnumType.ORDINAL) 
     @Column (name="it_role", nullable = false)
     private UserRole role;
+
+    @Column(name = "dt_created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @Column(name = "dt_deleted_at")
+    private Instant deletedAt;
 
     @Column (name="bl_is_enabled", nullable = false)
     private boolean isEnabled;

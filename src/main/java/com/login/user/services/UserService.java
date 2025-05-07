@@ -1,5 +1,6 @@
 package com.login.user.services;
 
+import java.time.Instant;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -107,7 +108,8 @@ public class UserService implements UserDetailsService {
 
     public User deleteUser(UUID id) {
         var userToDelete = getUserById(id);
-        userRepository.delete(userToDelete);
+        userToDelete.setDeletedAt(Instant.now());
+        userRepository.save(userToDelete);
 
         return userToDelete;
     }

@@ -41,7 +41,7 @@ curl --location --request POST 'http://localhost:8080/v1/user' \
 ## Ativar usuário
 
 ```bash
-curl --location --request GET 'http://localhost:8080/v1/user/activate/cc1ca03c-e231-4349-9494-479f8f573217'
+curl --location --request GET 'http://localhost:8080/v1/user/activate/{ID_DO_USUARIO}'
 ```
 
 ## Login
@@ -59,6 +59,8 @@ curl --location --request POST 'http://localhost:8080/v1/auth/login' \
 ### Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
 
 ## Obter Todos os Usuários
+
+### ROTA PARA ADMINS
 
 - O método obter todos usuários funciona com paginação, substitua o 4 pelo número da página desejado e 2 pela quantidade de itens desejados.
 

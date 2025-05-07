@@ -1,10 +1,16 @@
 create table tb_users (
     pk_id UUID PRIMARY KEY,
     st_name VARCHAR(100) NOT NULL,
-    st_email VARCHAR(200) UNIQUE NOT NULL,
+    st_email VARCHAR(200) NOT NULL,
     st_hashed_password VARCHAR(255) NOT NULL,
-    it_role SMALLINT NOT NULL
+    it_role SMALLINT NOT NULL,
+    dt_created_at TIMESTAMPTZ DEFAULT now(),
+    dt_deleted_at TIMESTAMPTZ
 );
+
+CREATE UNIQUE INDEX ux_users_email_active
+  ON tb_users(st_email)
+  WHERE dt_deleted_at IS NULL;
 
 --As senhas desses usuários é senha123
 INSERT INTO tb_users (pk_id, st_name, st_email, st_hashed_password, it_role)
