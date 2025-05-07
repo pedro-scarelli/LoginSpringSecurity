@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -32,12 +33,12 @@ public class UserController {
         @ApiResponse(responseCode = "400", description = "Retorna os erros do formulário caso tenha algum campo inválido, ou retorna junto a mensagem \"E-mail ou login duplicado\"")
     })
     @PostMapping()
-    public ResponseEntity<Object> registerUser(@Valid @RequestBody RegisterUserRequestDTO registerUserRequestDto, BindingResult result) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ValidationUtils.validationErrors(result));
         }
 
-        var newUser = userService.registerUser(registerUserRequestDto);
+        var newUser = userService.createUser(createUserRequestDto);
         var location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{id}")
@@ -48,6 +49,7 @@ public class UserController {
         return ResponseEntity.created(location).body(message);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(description = "Busca todos os usuários")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Retorna todos os usuários"),
@@ -67,7 +69,7 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var userFound = userService.getUserById(id);
-        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail(), userFound.isActive());
+        var userResponseDto = new UserResponseDTO(userFound.getId(), userFound.getName(),userFound.getEmail(), userFound.isEnabled());
 
         return ResponseEntity.ok(userResponseDto);
     }
@@ -84,7 +86,7 @@ public class UserController {
             BindingResult result) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var updatedUser = userService.updateUser(id, updateUserRequestDto);
-        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail(), updatedUser.isActive());
+        var userDto = new UserResponseDTO(updatedUser.getId(), updatedUser.getName(), updatedUser.getEmail(), updatedUser.isEnabled());
 
         return ResponseEntity.ok().body(userDto);
     }

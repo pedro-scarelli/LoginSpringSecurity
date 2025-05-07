@@ -29,10 +29,10 @@ para iniciar a api.
 
 # Documentação da API
 
-## Cadastro de Usuário
+## Cadastro de usuário
 
 ```bash
-curl --location POST 'http://localhost:8080/v1/user' \
+curl --location --request POST 'http://localhost:8080/v1/user' \
 --header 'Content-Type: application/json' \
 --data '{
     "name": "{NOME_DO_USUARIO}",
@@ -41,10 +41,16 @@ curl --location POST 'http://localhost:8080/v1/user' \
 }'
 ```
 
+## Ativar usuário
+
+```bash
+curl --location --request GET 'http://localhost:8080/v1/user/activate/cc1ca03c-e231-4349-9494-479f8f573217'
+```
+
 ## Login
 
 ```bash
-curl --location POST 'http://localhost:8080/v1/auth/login' \
+curl --location --request POST 'http://localhost:8080/v1/auth/login' \
 --header 'Content-Type: application/json' \
 --data '{
     "email": "{EMAIL_DO_USUARIO}",
@@ -59,14 +65,14 @@ curl --location POST 'http://localhost:8080/v1/auth/login' \
 - O método obter todos usuários funciona com paginação, substitua o 4 pelo número da página desejado e 2 pela quantidade de itens desejados.
 
 ```bash
-curl --location GET 'http://localhost:8080/v1/user?page=4&items=2' \
+curl --location --request GET 'http://localhost:8080/v1/user?page=4&items=2' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
 
 ## Obter Usuário
 
 ```bash
-curl --location --globoff GET 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
+curl --location --globoff --request GET 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
 
@@ -92,7 +98,7 @@ curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO
 ## Ativar redefinição de senha
 
 ```bash
-curl --location POST 'http://localhost:8080/v1/auth/redefine-password/activate' \
+curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/activate' \
 --header 'Content-Type: application/json' \
 --data '{
     "id": "{ID_DO_USUARIO}"
@@ -102,7 +108,7 @@ curl --location POST 'http://localhost:8080/v1/auth/redefine-password/activate' 
 ## Redefinir senha
 
 ```bash
-curl --location PATCH 'http://localhost:8080/v1/auth/redefine-password' \
+curl --location --request PATCH 'http://localhost:8080/v1/auth/redefine-password' \
 --header 'Content-Type: application/json' \
 --data '{
     "otpCode": "{CODIGO_OTP}",

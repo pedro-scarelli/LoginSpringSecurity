@@ -52,7 +52,7 @@ public class AuthenticationService {
     }
 
     public void isUserActivated(User user) {
-        if (!user.isActive()) {
+        if (!user.isEnabled()) {
             throw new UserNotActivatedException();
         }
     }
@@ -79,15 +79,19 @@ public class AuthenticationService {
         isRedefinePasswordAuthorized(user, otpCode);
  
         user.setPassword(userService.encodePassword(newPassword));
+        user.setOtpCode(null);
         userService.save(user);
     }
 
-    public void isRedefinePasswordAuthorized(User user, String otpCode) {
+    public void isRedefinePasswordAuthorized(User user, String incomingOtpCode) {
         var otpExpiry = user.getOtpTimestamp().plus(Duration.ofMinutes(5));
 
-        if (!user.getOtpCode().equals(otpCode) || Instant.now().isAfter(otpExpiry)) {
+        if (isOtpCodeValid(user.getOtpCode(), incomingOtpCode, otpExpiry)) {
             throw new UnauthorizedException("Redefinição de senha não autorizada");
         }
     }
-}
 
+    public boolean isOtpCodeValid(String userOtpCode, String incomingOtpCode, Instant otpExpiry) {
+        return userOtpCode == null || !userOtpCode.equals(incomingOtpCode) || Instant.now().isAfter(otpExpiry);
+    }
+}

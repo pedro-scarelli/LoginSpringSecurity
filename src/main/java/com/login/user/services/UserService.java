@@ -13,13 +13,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.login.user.domain.dtos.request.RegisterUserRequestDTO;
+import com.login.user.domain.dtos.request.CreateUserRequestDTO;
 import com.login.user.domain.dtos.request.UpdateUserRequestDTO;
 import com.login.user.domain.dtos.response.UserPaginationResponseDTO;
 import com.login.user.domain.dtos.response.UserResponseDTO;
 import com.login.user.domain.exceptions.DuplicateCredentialsException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
+import com.login.user.domain.models.enums.UserRole;
 import com.login.user.repositories.UserRepository;
 
 @Service
@@ -34,7 +35,7 @@ public class UserService implements UserDetailsService {
     public UserPaginationResponseDTO getAllUsers(int page, int items) {
         var users = userRepository.findAll(PageRequest.of(page - 1, items));
         var usersResponseDto = StreamSupport.stream(users.spliterator(), false)
-            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.isActive()))
+            .map(user -> new UserResponseDTO(user.getId(), user.getName(), user.getEmail(), user.isEnabled()))
             .collect(Collectors.toList());
 
         return new UserPaginationResponseDTO(
@@ -69,15 +70,16 @@ public class UserService implements UserDetailsService {
         return userFound;
     }
 
-    public User registerUser(RegisterUserRequestDTO registerUserRequestDto) {
+    public User createUser(CreateUserRequestDTO createUserRequestDto) {
         var newUser = new User();
-        BeanUtils.copyProperties(registerUserRequestDto, newUser);
-        newUser.setActive(false);
+        BeanUtils.copyProperties(createUserRequestDto, newUser);
+        newUser.setEnabled(false);
 
         isUserCredentialsDuplicated(newUser.getEmail());
 
         var hashedPassword = new BCryptPasswordEncoder().encode(newUser.getPassword());
         newUser.setPassword(hashedPassword);
+        newUser.setRole(UserRole.USER);
         userRepository.save(newUser);
         emailService.sendSignUpEmail(newUser.getEmail(), newUser.getId());
 
@@ -112,7 +114,7 @@ public class UserService implements UserDetailsService {
 
     public void activateUser(UUID id) {
         var userToActivate = getUserById(id);
-        userToActivate.setActive(true);
+        userToActivate.setEnabled(true);
         userRepository.save(userToActivate);
     }
 
