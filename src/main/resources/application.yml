@@ -26,4 +26,3 @@ api:
       expiration: ${JWT_EXPIRATION_SECONDS:7200}
       issuer: ${JWT_ISSUER:login-api}
   base-url: ${API_BASE_URL:http://localhost:8080}
-

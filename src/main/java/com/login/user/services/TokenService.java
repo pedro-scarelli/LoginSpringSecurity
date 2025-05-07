@@ -31,6 +31,7 @@ public class TokenService {
             var roles = user.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
                     .toList();
+
             var algorithm = Algorithm.HMAC256(jwtSecret);
             var token = JWT.create()
                 .withIssuer(jwtIssuer)
@@ -63,4 +64,3 @@ public class TokenService {
         return LocalDateTime.now().plusHours(jwtExpirationInSeconds / 3600).toInstant(ZoneOffset.of("-03:00"));
     }
 }
-

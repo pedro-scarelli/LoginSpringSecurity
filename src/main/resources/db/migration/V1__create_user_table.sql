@@ -19,5 +19,3 @@ VALUES
     ('5d6782d9-eb78-4930-8ec2-52e0cb1d49f8', 'Camila', 'camila@example.com', '$2a$10$GHVkOND8ISdumNjYl3TgiuIur3eQBf1HSY5iEbEWqz82rnVSwjW/6', 1),
     ('6ba4d9ac-7f82-4c50-944a-0ab5bf22624f', 'Luciana', 'luciana@example.com', '$2a$10$sd/yLk0I0DQ7WBcZYFao1eotE2yBShJMaIsTHYI.BujW.9VL54gZu', 0),
     ('8d4c30b2-c5a3-4a15-8b49-04f8680403ef', 'Gabriel', 'gabriel@example.com', '$2a$10$DAY90.L4QLtyOmRiOeUMxuIx0Kc87p52tSzIy5jTNu/5QPTWPab0y', 1);
-
-

@@ -17,22 +17,19 @@ git clone https://github.com/pedro-scarelli/LoginSpringSecurity.git
 cd LoginSpringSecurity
 ```
 
-3. Já na pasta root do projeto, execute o comando
+2. Já na pasta root do projeto, execute o comando para iniciar a API:
 
 ```bash
 docker compose up --build
 ```
 
-para iniciar a api.
-
-4. Se a porta 8080 não estiver disponível ele vai iniciar em outra porta e você devera mudar a porta depois do localhost: nas rotas.
-
-# Documentação da API
+# Documentação
 
 ## Cadastro de usuário
 
 ```bash
 curl --location --request POST 'http://localhost:8080/v1/user' \
+
 --header 'Content-Type: application/json' \
 --data '{
     "name": "{NOME_DO_USUARIO}",
@@ -51,6 +48,7 @@ curl --location --request GET 'http://localhost:8080/v1/user/activate/cc1ca03c-e
 
 ```bash
 curl --location --request POST 'http://localhost:8080/v1/auth/login' \
+
 --header 'Content-Type: application/json' \
 --data '{
     "email": "{EMAIL_DO_USUARIO}",
