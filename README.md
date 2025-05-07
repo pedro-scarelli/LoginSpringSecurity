@@ -20,6 +20,7 @@ cd LoginSpringSecurity
 ```bash
 docker compose up --build
 ```
+---
 
 # Documentação
 
@@ -37,13 +38,13 @@ curl --location --request POST 'http://localhost:8080/v1/user' \
 ```
 ***Esse método envia um e-mail para ativar o seu usuário***  
 ![Screenshot From 2025-05-07 19-09-07](https://github.com/user-attachments/assets/512f464a-dee8-4265-b9ae-5c91f74d7daa)
-
+---
 ## Ativar usuário
 
 ```bash
 curl --location --request GET 'http://localhost:8080/v1/user/activate/{ID_DO_USUARIO}'
 ```
-
+---
 ## Login
 
 ```bash
@@ -57,7 +58,7 @@ curl --location --request POST 'http://localhost:8080/v1/auth/login' \
 ```
 
 ### Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
-
+---
 ## Obter todos os usuários
 
 ### ROTA PARA ADMINS
@@ -68,14 +69,14 @@ curl --location --request POST 'http://localhost:8080/v1/auth/login' \
 curl --location --request GET 'http://localhost:8080/v1/user?page=4&items=2' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
-
+---
 ## Obter usuário
 
 ```bash
 curl --location --globoff --request GET 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
-
+---
 ## Atualizar usuário
 
 ```bash
@@ -87,7 +88,7 @@ curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_
     "password": "{SENHA_DO_USUARIO}"
 }'
 ```
-
+---
 ## Deletar usuário
 
 ### O usuário apenas vai ser marcada como deletado e excluido das próximas buscas.
@@ -96,7 +97,7 @@ curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_
 curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
 --header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
 ```
-
+---
 ## Ativar redefinição de senha
 ### Esse endpoint ativa a redefinição de senha para um usuário
 ```bash
@@ -108,7 +109,7 @@ curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/
 ```
 ***E-mail enviado com código para redefinição de senha***
 ![Screenshot From 2025-05-07 19-10-34](https://github.com/user-attachments/assets/6201f6af-e628-4d66-b8e3-c4344ac99455)
-
+---
 ## Redefinir senha
 
 Pegue o código que você recebeu no endpoint que ativa a redefinição de senha e coloque no campo "otpCode"
