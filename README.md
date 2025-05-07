@@ -111,6 +111,8 @@ curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/
 
 ## Redefinir senha
 
+Pegue o código que você recebeu no endpoint que ativa a redefinição de senha e coloque no campo "otpCode"
+
 ```bash
 curl --location --request PATCH 'http://localhost:8080/v1/auth/redefine-password' \
 --header 'Content-Type: application/json' \
