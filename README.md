@@ -14,6 +14,7 @@ API de autenticação e gerenciamento de usuários desenvolvida com Java, Spring
 - JWT
 - Flyway (migrations)
 - Docker & Docker Compose
+- Swagger
 
 ---
 
@@ -53,8 +54,11 @@ API de autenticação e gerenciamento de usuários desenvolvida com Java, Spring
 A API estará disponível em `http://localhost:8080`.
 
 ---
+## 📋 Documentação
 
-## 📋 Endpoints
+Link para o swagger: http://localhost:8080/swagger-ui/index.html
+
+## Endpoints
 
 ### 1. Cadastro de usuário
 
