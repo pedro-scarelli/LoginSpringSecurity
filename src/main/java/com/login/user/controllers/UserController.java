@@ -16,23 +16,49 @@ import com.login.user.services.UserService;
 import com.login.user.utils.ValidationUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.enums.*;
+import io.swagger.v3.oas.annotations.media.*;
+import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.security.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@RequestMapping("/v1/user")
+@Tag(name = "User Management", description = "Endpoints para CRUD e ativação de usuários")
+@SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
+@RequestMapping(path = "/v1/user", produces = "application/json")
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @Operation(description = "Cadastra um usuário")
+    @Operation(
+        summary = "Cadastrar novo usuário",
+        description = "Cria um novo usuário no sistema e envia e-mail de confirmação"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Retorna o ID do usuário criado."),
-        @ApiResponse(responseCode = "400", description = "Retorna os erros do formulário caso tenha algum campo inválido, ou retorna junto a mensagem \"E-mail ou login duplicado\"")
+        @ApiResponse(
+            responseCode = "201",
+            description = "Usuário criado com sucesso",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(
+                    example = "{ \"message\": \"Usuário criado com sucesso\", \"userId\": \"<uuid>\" }"
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Campos inválidos ou e-mail duplicado",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(
+                    example = "{ \"fieldErrors\": { \"email\": \"Email inválido\" } }"
+                )
+            )
+        )
     })
-    @PostMapping()
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ValidationUtils.validationErrors(result));
@@ -49,20 +75,43 @@ public class UserController {
         return ResponseEntity.created(location).body(message);
     }
 
+
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(description = "Busca todos os usuários")
+    @Operation(
+        summary = "Listar usuários paginados",
+        description = "Retorna lista paginada de usuários, podendo filtrar por página e quantidade",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Retorna todos os usuários"),
-        @ApiResponse(responseCode = "403", description = "Não autorizado")
+        @ApiResponse(
+            responseCode = "200",
+            description = "Lista de usuários retornada",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UserPaginationResponseDTO.class)
+            )
+        ),
+        @ApiResponse(responseCode = "403", description = "Acesso negado")
     })
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<UserPaginationResponseDTO> getAllUsers(@Valid GetAllUserRequestDTO getAllUserRequestDto) {
         return ResponseEntity.ok(userService.getAllUsers(getAllUserRequestDto.page(), getAllUserRequestDto.items()));
     }
 
-    @Operation(description = "Busca um usuário pelo ID")
+    @Operation(
+        summary = "Obter usuário por ID",
+        description = "Retorna os dados de um usuário pelo seu ID",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Retorna o usuário procurado"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Usuário encontrado",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UserResponseDTO.class)
+            )
+        ),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @GetMapping("/{id}")
@@ -82,12 +131,24 @@ public class UserController {
         return ResponseEntity.ok(userResponseDto);
     }
 
-    @Operation(description = "Atualiza um usuário pelo id")
+    @Operation(
+        summary = "Atualizar usuário",
+        description = "Atualiza dados de um usuário existente pelo ID",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Usuário atualizado com sucesso",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = UserResponseDTO.class)
+            )
+        ),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
-    @PatchMapping("/{id}")
+    @PatchMapping(path = "/{id}", consumes = "application/json")
     public ResponseEntity<UserResponseDTO> updateUser(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequestDTO updateUserRequestDto,
@@ -107,9 +168,22 @@ public class UserController {
         return ResponseEntity.ok().body(userDto);
     }
 
-    @Operation(description = "Deleta um usuário pelo id")
+    @Operation(
+        summary = "Excluir usuário",
+        description = "Marca um usuário como excluído pelo seu ID",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuário deletado com sucesso"),
+        @ApiResponse(
+            responseCode = "200",
+            description = "Usuário deletado com sucesso",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(
+                    example = "{ \"message\": \"Usuário deletado com sucesso\", \"userId\": \"<uuid>\" }"
+                )
+            )
+        ),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @DeleteMapping("/{id}")
@@ -121,7 +195,10 @@ public class UserController {
         return ResponseEntity.ok().body(message);
     }
 
-    @Operation(description = "Ativa um usuário pelo link mandado pelo e-mail")
+    @Operation(
+        summary = "Ativar usuário",
+        description = "Ativa um usuário inativo via link de e-mail"
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Usuário ativado com sucesso"),
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
