@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -18,22 +18,20 @@ import com.login.user.domain.exceptions.UserNotActivatedException;
 import com.login.user.domain.exceptions.UserNotFoundException;
 import com.login.user.domain.models.User;
 
+@AllArgsConstructor
 @Service
 public class AuthenticationService {
  
-    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private UserService userService;
 
-    @Autowired
     private EmailService emailService;
 
     public User authenticateLogin(LoginRequestDTO loginRequestDto){
         try {
             var user = userService.getUserByEmail(loginRequestDto.email());
-            isUserActivated(user);
+            isUserActivated(user);//teste
             var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.email(), loginRequestDto.password());
             var auth = this.authenticationManager.authenticate(authenticationToken);
 

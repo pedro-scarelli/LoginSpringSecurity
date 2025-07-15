@@ -2,7 +2,7 @@ package com.login.user.controllers;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,16 +17,15 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@AllArgsConstructor
 @Tag(name = "Authentication", description = "Endpoints para autenticação de usuários, login e redefinição de senha.")
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
 @RequestMapping(path = "/v1/auth", produces = "application/json")
 @RestController
 public class AuthenticationController {
 
-    @Autowired
     private AuthenticationService authenticationService;
 
-    @Autowired
     private TokenService tokenService;
 
 

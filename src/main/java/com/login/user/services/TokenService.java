@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.login.user.config.TokenServiceConfig;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -17,14 +17,17 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.secret}")
-    private String jwtSecret;
+    private final String jwtSecret;
 
-    @Value("${api.security.token.issuer}")
-    private String jwtIssuer;
+    private final Long jwtExpirationInSeconds;
 
-    @Value("${api.security.token.expiration}")
-    private Long jwtExpirationInSeconds;
+    private final String jwtIssuer;
+
+    public TokenService(TokenServiceConfig tokenServiceConfig) {
+        this.jwtSecret = tokenServiceConfig.jwtSecret();
+        this.jwtExpirationInSeconds = tokenServiceConfig.jwtExpirationInSeconds();
+        this.jwtIssuer = tokenServiceConfig.jwtIssuer();
+    }
 
     public String generateToken(UserDetails user){
         try{

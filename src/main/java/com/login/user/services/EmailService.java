@@ -2,7 +2,7 @@ package com.login.user.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,16 +13,14 @@ import com.login.user.utils.RedefinePasswordEmailBody;
 
 import jakarta.mail.MessagingException;
 
+@AllArgsConstructor
 @Service
 public class EmailService {
 
-    @Autowired
     private JavaMailSender mailSender;
 
-    @Autowired
     private ActivateUserEmailBody activateUserEmailBody;
 
-    @Autowired
     private RedefinePasswordEmailBody redefinePasswordEmailBody;
 
     public void sendHtmlEmail(String to, String subject, String htmlBody) throws MessagingException {

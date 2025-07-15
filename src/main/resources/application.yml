@@ -4,7 +4,7 @@ spring:
   application:
     name: login
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:db_login}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:db_login}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:simple_password}
   mail:
@@ -22,7 +22,7 @@ spring:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:my-secret-key}
-      expiration: ${JWT_EXPIRATION_SECONDS:7200}
-      issuer: ${JWT_ISSUER:login-api}
+      jwtSecret: ${JWT_SECRET:my-secret-key}
+      jwtExpirationInSeconds: ${JWT_EXPIRATION_SECONDS:7200}
+      jwtIssuer: ${JWT_ISSUER:login-api}
   base-url: ${API_BASE_URL:http://localhost:8080}

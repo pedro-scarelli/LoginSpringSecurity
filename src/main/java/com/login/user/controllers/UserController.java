@@ -3,7 +3,7 @@ package com.login.user.controllers;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -23,13 +23,13 @@ import io.swagger.v3.oas.annotations.security.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@AllArgsConstructor
 @Tag(name = "User Management", description = "Endpoints para CRUD e ativação de usuários")
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT", in = SecuritySchemeIn.HEADER)
 @RequestMapping(path = "/v1/user", produces = "application/json")
 @RestController
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
     @Operation(
