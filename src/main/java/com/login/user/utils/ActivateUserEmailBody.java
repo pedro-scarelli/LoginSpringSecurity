@@ -2,7 +2,8 @@ package com.login.user.utils;
 
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.login.user.config.ApiEnvVariablesConfig;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,8 +28,8 @@ public class ActivateUserEmailBody {
                     Obrigado por se cadastrar! Clique no botão abaixo para ativar sua conta:
                   </p>
                   <a href="%s/activate/%s"
-                     style="display:inline-block; background-color:#1A237E; color:#fff; 
-                            text-decoration:none; border-radius:4px; padding:12px 24px; 
+                     style="display:inline-block; background-color:#1A237E; color:#fff;
+                            text-decoration:none; border-radius:4px; padding:12px 24px;
                             font-size:16px; font-weight:600;">
                     Ativar Conta
                   </a>
@@ -47,8 +48,8 @@ public class ActivateUserEmailBody {
         </div>
         """;
 
-    public ActivateUserEmailBody(@Value("${api.base-url}") String apiBaseUrl) {
-        this.apiBaseUrl = Objects.requireNonNull(apiBaseUrl, "api.base-url não configurada");
+    public ActivateUserEmailBody(@Valid ApiEnvVariablesConfig config) {
+        apiBaseUrl = config.baseUrl();
     }
 
     public String of(String userId) {

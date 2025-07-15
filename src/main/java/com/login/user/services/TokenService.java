@@ -36,14 +36,13 @@ public class TokenService {
                     .toList();
 
             var algorithm = Algorithm.HMAC256(jwtSecret);
-            var token = JWT.create()
+
+            return JWT.create()
                 .withIssuer(jwtIssuer)
                 .withSubject(user.getUsername())
                 .withExpiresAt(getExpirationDate())
                 .withArrayClaim("roles", roles.toArray(new String[0]))
                 .sign(algorithm);
-
-            return token;
         } catch(JWTCreationException exception){
             throw new RuntimeException("Erro ao gerar token");
         }

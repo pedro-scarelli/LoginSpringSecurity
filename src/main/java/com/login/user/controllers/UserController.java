@@ -149,10 +149,13 @@ public class UserController {
         @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
     @PatchMapping(path = "/{id}", consumes = "application/json")
-    public ResponseEntity<UserResponseDTO> updateUser(
+    public ResponseEntity<Object> updateUser(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequestDTO updateUserRequestDto,
             BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(ValidationUtils.validationErrors(result));
+        }
         ValidationUtils.isTargetUserSameFromRequest(id);
         var updatedUser = userService.updateUser(id, updateUserRequestDto);
         var userDto = new UserResponseDTO(

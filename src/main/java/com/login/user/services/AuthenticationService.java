@@ -31,7 +31,7 @@ public class AuthenticationService {
     public User authenticateLogin(LoginRequestDTO loginRequestDto){
         try {
             var user = userService.getUserByEmail(loginRequestDto.email());
-            isUserActivated(user);//teste
+            isUserActivated(user);
             var authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.email(), loginRequestDto.password());
             var auth = this.authenticationManager.authenticate(authenticationToken);
 
