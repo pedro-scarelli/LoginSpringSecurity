@@ -38,9 +38,7 @@ public class AuthenticationService {
             if (auth.getPrincipal() instanceof UserDetails) {
                 return user;
             }
-        } catch (UserNotFoundException exception){
-            throw new IncorrectCredentialsException("Login ou senha incorretos");
-        } catch (AuthenticationException exception){
+        } catch (UserNotFoundException | AuthenticationException exception){
             throw new IncorrectCredentialsException("Login ou senha incorretos");
         } catch (UserNotActivatedException exception){
             throw exception;

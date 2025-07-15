@@ -2,6 +2,7 @@ package com.login.user.domain.exceptions;
 
 import java.util.Map;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -71,7 +72,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         var errors = ex.getBindingResult()
             .getFieldErrors()
             .stream()
-            .map(error -> error.getDefaultMessage())
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
             .toList();
 
         var errorResponse = new ErrorResponseDTO(

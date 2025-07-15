@@ -18,8 +18,7 @@ public final class ValidationUtils {
     public static String validationErrors(BindingResult result) {
         return result.getAllErrors().stream()
                 .map(error -> {
-                    if (error instanceof FieldError) {
-                        FieldError fieldError = (FieldError) error;
+                    if (error instanceof FieldError fieldError) {
                         return fieldError.getField() + ": " + fieldError.getDefaultMessage();
                     } else {
                         return error.getDefaultMessage();

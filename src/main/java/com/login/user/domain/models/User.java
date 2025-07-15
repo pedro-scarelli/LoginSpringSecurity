@@ -1,5 +1,6 @@
 package com.login.user.domain.models;
 
+import java.io.Serial;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import lombok.Setter;
 @SQLRestriction("dt_deleted_at IS NULL")
 public class User implements UserDetails {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id

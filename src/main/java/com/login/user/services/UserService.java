@@ -58,9 +58,7 @@ public class UserService implements UserDetailsService {
         var optionalUser = userRepository.findById(id);
 
         if(optionalUser.isPresent()){
-            var userFound = optionalUser.get();
-
-            return userFound;
+            return optionalUser.get();
         }
 
         throw new UserNotFoundException();

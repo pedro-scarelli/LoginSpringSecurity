@@ -2,8 +2,10 @@ package com.login.user.domain.models.enums;
 
 import java.util.List;
 
+import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+@Getter
 public enum UserRole {
     ADMIN(List.of("ROLE_ADMIN", "ROLE_USER")),
     USER(List.of("ROLE_USER"));
@@ -16,8 +18,5 @@ public enum UserRole {
             .toList();
     }
 
-    public List<SimpleGrantedAuthority> getAuthorities() {
-        return authorities;
-    }
 }
 
