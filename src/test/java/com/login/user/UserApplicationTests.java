@@ -1,6 +1,6 @@
 package com.login.user;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -36,10 +36,7 @@ class UserServiceTest {
         var randomUUID = UUID.randomUUID();
         when(userRepository.findById(randomUUID)).thenReturn(Optional.empty());
 
-        try{
-            userService.getUserById(randomUUID);
-            fail();
-        } catch(UserNotFoundException exception) {}
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(randomUUID));
     }
 
     @Test
@@ -47,10 +44,7 @@ class UserServiceTest {
         var email = "test@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(null);
 
-        try{
-            userService.getUserByEmail(email);
-            fail();
-        } catch(UserNotFoundException exception) {}
+        assertThrows(UserNotFoundException.class, () -> userService.getUserByEmail(email));
     }
 
     @Test
@@ -58,9 +52,6 @@ class UserServiceTest {
         var createUserDto = new CreateUserRequestDTO("John Doe", "john@example.com", "password");
         when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
 
-        try{
-            userService.createUser(createUserDto);
-            fail();
-        } catch(DuplicateCredentialsException exception) {}
+        assertThrows(DuplicateCredentialsException.class, () -> userService.createUser(createUserDto));
     }
  }
