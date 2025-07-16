@@ -22,7 +22,7 @@ spring:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:my-secret-key}
-      expiration: ${JWT_EXPIRATION_SECONDS:7200}
-      issuer: ${JWT_ISSUER:login-api}
+      jwtSecret: ${JWT_SECRET:my-secret-key}
+      jwtExpirationInSeconds: ${JWT_EXPIRATION_SECONDS:7200}
+      jwtIssuer: ${JWT_ISSUER:login-api}
   base-url: ${API_BASE_URL:http://localhost:8080}

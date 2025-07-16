@@ -1,6 +1,6 @@
 package com.login.user;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -12,11 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.login.user.domain.dtos.request.CreateUserRequestDTO;
-import com.login.user.domain.exceptions.DuplicateCredentialsException;
-import com.login.user.domain.exceptions.UserNotFoundException;
-import com.login.user.repositories.UserRepository;
-import com.login.user.services.UserService;
+import com.login.user.domain.dto.request.CreateUserRequestDTO;
+import com.login.user.domain.exception.DuplicateCredentialsException;
+import com.login.user.domain.exception.UserNotFoundException;
+import com.login.user.repository.UserRepository;
+import com.login.user.service.UserService;
 
 class UserServiceTest {
 
@@ -36,10 +36,7 @@ class UserServiceTest {
         var randomUUID = UUID.randomUUID();
         when(userRepository.findById(randomUUID)).thenReturn(Optional.empty());
 
-        try{
-            userService.getUserById(randomUUID);
-            fail();
-        } catch(UserNotFoundException exception) {}
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(randomUUID));
     }
 
     @Test
@@ -47,10 +44,7 @@ class UserServiceTest {
         var email = "test@gmail.com";
         when(userRepository.findByEmail(email)).thenReturn(null);
 
-        try{
-            userService.getUserByEmail(email);
-            fail();
-        } catch(UserNotFoundException exception) {}
+        assertThrows(UserNotFoundException.class, () -> userService.getUserByEmail(email));
     }
 
     @Test
@@ -58,9 +52,6 @@ class UserServiceTest {
         var createUserDto = new CreateUserRequestDTO("John Doe", "john@example.com", "password");
         when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
 
-        try{
-            userService.createUser(createUserDto);
-            fail();
-        } catch(DuplicateCredentialsException exception) {}
+        assertThrows(DuplicateCredentialsException.class, () -> userService.createUser(createUserDto));
     }
  }

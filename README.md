@@ -1,116 +1,164 @@
-User
+**LoginSpringSecurity**
 
-# Instruções de Configuração
+API de autenticação e gerenciamento de usuários desenvolvida com Java, Spring Boot e Spring Security. Oferece features profissionais como soft delete, roles e permissões, envio de e-mails via SMTP e mais.
 
-## Pré-requisitos
+---
+
+## 🔧 Tecnologias
+
+- Java 17+
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- JWT
+- Flyway (migrations)
+- Docker & Docker Compose
+- Swagger
+
+---
+
+## 🚀 Funcionalidades
+
+- Cadastro de usuários com ativação via e-mail
+- Login com JWT
+- Soft delete de usuários
+- Gerenciamento de roles e permissões
+- Redefinição de senha via OTP (envio de código por e-mail)
+- Paginação de listagem de usuários (somente Admin)
+- CRUD de usuários
+
+---
+
+## 📦 Pré-requisitos
 
 - Docker
 - Docker Compose
 - Git
 
-## Inicialização do Servidor
+---
 
-1. No terminal navegue até a pasta onde deseja clonar o projeto e execute os comandos
+## ⚙️ Configuração e execução
 
-```bash
-git clone https://github.com/pedro-scarelli/LoginSpringSecurity.git
-cd LoginSpringSecurity
-```
+1. Clone este repositório e navegue até a pasta do projeto:
+   ```bash
+   git clone https://github.com/pedro-scarelli/LoginSpringSecurity.git
+   cd LoginSpringSecurity
+   ```
 
-2. Já na pasta root do projeto, execute o comando para iniciar a API:
+2. Inicie a aplicação com Docker Compose:
+   ```bash
+   docker compose up --build
+   ```
 
-```bash
-docker compose up --build
-```
+A API estará disponível em `http://localhost:8080`.
 
-# Documentação
+---
+## 📋 Documentação
 
-## Cadastro de usuário
+Link para o swagger: http://localhost:8080/swagger-ui/index.html
 
-```bash
-curl --location --request POST 'http://localhost:8080/v1/user' \
+## Endpoints
 
---header 'Content-Type: application/json' \
---data '{
-    "name": "{NOME_DO_USUARIO}",
-    "email": "{EMAIL_DO_USUARIO}",
-    "password": "{SENHA_DO_USUARIO}"
-}'
-```
-
-## Ativar usuário
+### 1. Cadastro de usuário
 
 ```bash
-curl --location --request GET 'http://localhost:8080/v1/user/activate/cc1ca03c-e231-4349-9494-479f8f573217'
-```
+POST /v1/user
+Content-Type: application/json
 
-## Login
+{
+  "name": "{NOME_DO_USUARIO}",
+  "email": "{EMAIL_DO_USUARIO}",
+  "password": "{SENHA_DO_USUARIO}"
+}
+```
+- Envia e-mail de confirmação para ativação da conta.
+
+### 2. Ativação de conta
 
 ```bash
-curl --location --request POST 'http://localhost:8080/v1/auth/login' \
-
---header 'Content-Type: application/json' \
---data '{
-    "email": "{EMAIL_DO_USUARIO}",
-    "password": "{SENHA_DO_USUARIO}"
-}'
+GET /v1/user/activate/{ID_DO_USUARIO}
 ```
 
-### Caso queira logar em algum dos users criados pelo flyway a senha é: senha123
-
-## Obter Todos os Usuários
-
-- O método obter todos usuários funciona com paginação, substitua o 4 pelo número da página desejado e 2 pela quantidade de itens desejados.
+### 3. Login
 
 ```bash
-curl --location --request GET 'http://localhost:8080/v1/user?page=4&items=2' \
---header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
-```
+POST /v1/auth/login
+Content-Type: application/json
 
-## Obter Usuário
+{
+  "email": "{EMAIL_DO_USUARIO}",
+  "password": "{SENHA_DO_USUARIO}"
+}
+```
+- Para contas criadas pelo Flyway, utilize a senha padrão: `senha123`.
+
+### 4. Listar usuários (somente Admin)
 
 ```bash
-curl --location --globoff --request GET 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
---header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
+GET /v1/user?page={NÚMERO_PAGINA}&items={QTD_ITENS}
+Authorization: Bearer {TOKEN_JWT}
 ```
 
-## Atualizar Usuário
+### 5. Obter usuário
 
 ```bash
-curl --location --globoff --request PATCH 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer {TOKEN_DO_USUARIO}' \
---data '{
-    "name": "{NOME_DO_USUARIO}",
-    "password": "{SENHA_DO_USUARIO}"
-}'
+GET /v1/user/{ID_DO_USUARIO}
+Authorization: Bearer {TOKEN_JWT}
 ```
 
-## Excluir Usuário
+### 6. Atualizar usuário
 
 ```bash
-curl --location --globoff --request DELETE 'http://localhost:8080/v1/user/{ID_DO_USUARIO}' \
---header 'Authorization: Bearer {TOKEN_DO_USUARIO}'
+PATCH /v1/user/{ID_DO_USUARIO}
+Content-Type: application/json
+Authorization: Bearer {TOKEN_JWT}
+
+{
+  "name": "{NOVO_NOME}",
+  "password": "{NOVA_SENHA}"
+}
 ```
 
-## Ativar redefinição de senha
+### 7. Deletar usuário (soft delete)
 
 ```bash
-curl --location --request POST 'http://localhost:8080/v1/auth/redefine-password/activate' \
---header 'Content-Type: application/json' \
---data '{
-    "id": "{ID_DO_USUARIO}"
-}'
+DELETE /v1/user/{ID_DO_USUARIO}
+Authorization: Bearer {TOKEN_JWT}
 ```
+- Marca o usuário como deletado e o remove das buscas.
 
-## Redefinir senha
+### 8. Ativar redefinição de senha
 
 ```bash
-curl --location --request PATCH 'http://localhost:8080/v1/auth/redefine-password' \
---header 'Content-Type: application/json' \
---data '{
-    "otpCode": "{CODIGO_OTP}",
-    "newPassword": "{NEW_PASSWORD}",
-    "email": "{EMAIL_DO_USUARIO}"
-}'
+POST /v1/auth/redefine-password/activate
+Content-Type: application/json
+
+{
+  "email": "{EMAIL_DO_USUARIO}"
+}
 ```
+- Envia e-mail com código OTP.
+
+### 9. Redefinir senha
+
+```bash
+PATCH /v1/auth/redefine-password
+Content-Type: application/json
+
+{
+  "email": "{EMAIL_DO_USUARIO}",
+  "otpCode": "{CODIGO_OTP}",
+  "newPassword": "{NOVA_SENHA}"
+}
+```
+
+---
+
+## 📸 Screenshots
+
+![Cadastro de usuário](https://github.com/user-attachments/assets/512f464a-dee8-4265-b9ae-5c91f74d7daa)
+
+![OTP para redefinição de senha](https://github.com/user-attachments/assets/6201f6af-e628-4d66-b8e3-c4344ac99455)
+
+---

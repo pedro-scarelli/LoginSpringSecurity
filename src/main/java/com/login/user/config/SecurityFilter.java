@@ -2,30 +2,29 @@ package com.login.user.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
 
-import com.login.user.domain.exceptions.UnauthorizedException;
-import com.login.user.domain.models.User;
-import com.login.user.repositories.UserRepository;
-import com.login.user.services.TokenService;
+import com.login.user.domain.exception.UnauthorizedException;
+import com.login.user.domain.model.User;
+import com.login.user.repository.UserRepository;
+import com.login.user.service.TokenService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@AllArgsConstructor
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    @Autowired
     TokenService tokenService;
 
-    @Autowired
     UserRepository userRepository;
 
     @Override
