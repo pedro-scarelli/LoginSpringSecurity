@@ -1,6 +1,8 @@
 target/
 .settings/
 .vscode/
+.idea/
 .project
 .factorypath
 .classpath
+user.iml
