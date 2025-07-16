@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.login.user.domain.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -33,7 +34,7 @@ public class UserController {
 
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDto, BindingResult result) {
+    public ResponseEntity<@NonNull Object> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(ValidationUtils.validationErrors(result));
         }
@@ -52,12 +53,12 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
-    public ResponseEntity<UserPaginationResponseDTO> getAllUsers(@Valid GetAllUserRequestDTO getAllUserRequestDto) {
+    public ResponseEntity<@NonNull UserPaginationResponseDTO> getAllUsers(@Valid GetAllUserRequestDTO getAllUserRequestDto) {
         return ResponseEntity.ok(userService.getAllUsers(getAllUserRequestDto.page(), getAllUserRequestDto.items()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUser(@PathVariable UUID id) {
+    public ResponseEntity<@NonNull UserResponseDTO> getUser(@PathVariable UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var userFound = userService.getUserById(id);
 
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/json")
-    public ResponseEntity<Object> updateUser(
+    public ResponseEntity<@NonNull Object> updateUser(
             @PathVariable("id") UUID id,
             @Valid @RequestBody UpdateUserRequestDTO updateUserRequestDto,
             BindingResult result) {
@@ -79,7 +80,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable("id") UUID id) {
+    public ResponseEntity<@NonNull Map<String, Object>> deleteUser(@PathVariable("id") UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var deletedUser = userService.deleteUser(id);
         Map<String, Object> message = Map.of("message", "Usuário deletado com sucesso", "userId", deletedUser.getId());
@@ -88,7 +89,7 @@ public class UserController {
     }
 
     @GetMapping("/activate/{id}")
-    public ResponseEntity<Void> activateUser(@PathVariable("id") UUID id) {
+    public ResponseEntity<@NonNull Void> activateUser(@PathVariable("id") UUID id) {
         userService.activateUser(id);
 
         return ResponseEntity.noContent().build();

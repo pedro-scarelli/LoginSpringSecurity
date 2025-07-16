@@ -3,6 +3,7 @@ package com.login.user.controller;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class AuthenticationController {
 
 
     @PostMapping(path = "/login", consumes = "application/json")
-    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequestDTO loginRequestDto) {
+    public ResponseEntity<@NonNull Map<String, String>> login(@RequestBody @Valid LoginRequestDTO loginRequestDto) {
         var authenticatedUser = authenticationService.authenticateLogin(loginRequestDto);
         var token = tokenService.generateToken(authenticatedUser);
 
@@ -35,7 +36,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/redefine-password/activate", consumes = "application/json")
-    public ResponseEntity<Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid EmailRequestDTO emailRequestDto) {
+    public ResponseEntity<@NonNull Map<String, String>> activateUserRedefinePassword(@RequestBody @Valid EmailRequestDTO emailRequestDto) {
         authenticationService.activateRedefinePassword(emailRequestDto.email());
         var response = Map.of("message", "Código para redefinição de senha enviado");
 
@@ -43,7 +44,7 @@ public class AuthenticationController {
     }
 
     @PatchMapping(path = "/redefine-password", consumes = "application/json")
-    public ResponseEntity<Map<String, String>> redefinePassword(@RequestBody @Valid RedefinePasswordRequestDTO redefinePasswordRequestDto) {
+    public ResponseEntity<@NonNull Map<String, String>> redefinePassword(@RequestBody @Valid RedefinePasswordRequestDTO redefinePasswordRequestDto) {
         authenticationService.redefinePassword(
                 redefinePasswordRequestDto.otpCode(),
                 redefinePasswordRequestDto.newPassword(),

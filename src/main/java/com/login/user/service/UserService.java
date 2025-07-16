@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.login.user.domain.dto.request.CreateUserRequestDTO;
 import com.login.user.domain.dto.request.UpdateUserRequestDTO;
 import com.login.user.domain.dto.response.UserPaginationResponseDTO;
-import com.login.user.domain.dto.response.UserResponseDTO;
 import com.login.user.domain.exception.DuplicateCredentialsException;
 import com.login.user.domain.exception.UserNotFoundException;
 import com.login.user.domain.model.User;
