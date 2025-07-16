@@ -15,6 +15,7 @@ API de autenticação e gerenciamento de usuários desenvolvida com Java, Spring
 - Flyway (migrations)
 - Docker & Docker Compose
 - Swagger
+- SMTP
 
 ---
 
