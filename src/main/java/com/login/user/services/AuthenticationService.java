@@ -12,10 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.login.user.domain.dtos.request.LoginRequestDTO;
-import com.login.user.domain.exceptions.IncorrectCredentialsException;
-import com.login.user.domain.exceptions.UnauthorizedException;
-import com.login.user.domain.exceptions.UserNotActivatedException;
-import com.login.user.domain.exceptions.UserNotFoundException;
+import com.login.user.domain.exceptions.*;
 import com.login.user.domain.models.User;
 
 @AllArgsConstructor
@@ -40,8 +37,6 @@ public class AuthenticationService {
             }
         } catch (UserNotFoundException | AuthenticationException exception){
             throw new IncorrectCredentialsException("Login ou senha incorretos");
-        } catch (UserNotActivatedException exception){
-            throw exception;
         }
 
         throw new UserNotFoundException();
