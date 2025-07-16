@@ -12,11 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.login.user.domain.dtos.request.CreateUserRequestDTO;
-import com.login.user.domain.exceptions.DuplicateCredentialsException;
-import com.login.user.domain.exceptions.UserNotFoundException;
-import com.login.user.repositories.UserRepository;
-import com.login.user.services.UserService;
+import com.login.user.domain.dto.request.CreateUserRequestDTO;
+import com.login.user.domain.exception.DuplicateCredentialsException;
+import com.login.user.domain.exception.UserNotFoundException;
+import com.login.user.repository.UserRepository;
+import com.login.user.service.UserService;
 
 class UserServiceTest {
 
