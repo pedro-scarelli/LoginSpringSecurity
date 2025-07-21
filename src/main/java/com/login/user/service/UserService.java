@@ -5,22 +5,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.login.user.domain.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.login.user.domain.dto.request.CreateUserRequestDTO;
-import com.login.user.domain.dto.request.UpdateUserRequestDTO;
+import com.login.user.domain.mapper.UserEntityMapper;
+import com.login.user.domain.dto.request.*;
 import com.login.user.domain.dto.response.UserPaginationResponseDTO;
-import com.login.user.domain.exception.DuplicateCredentialsException;
-import com.login.user.domain.exception.UserNotFoundException;
-import com.login.user.domain.model.User;
+import com.login.user.domain.exception.*;
+import com.login.user.domain.model.UserEntity;
 import com.login.user.domain.model.enums.UserRole;
 import com.login.user.repository.UserRepository;
 
@@ -33,7 +29,7 @@ public class UserService implements UserDetailsService {
 
     private final EmailService emailService;
 
-    private final UserMapper userMapper;
+    private final UserEntityMapper userMapper;
 
     public UserPaginationResponseDTO getAllUsers(int page, int items) {
         var users = userRepository.findAll(PageRequest.of(page - 1, items));
@@ -47,7 +43,7 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public User getUserById(UUID id) {
+    public UserEntity getUserById(UUID id) {
         var optionalUser = userRepository.findById(id);
 
         if(optionalUser.isPresent()){
@@ -57,21 +53,21 @@ public class UserService implements UserDetailsService {
         throw new UserNotFoundException();
     }
 
-    public void save(User userToSave) {
+    public void save(UserEntity userToSave) {
         userRepository.save(userToSave);
     }
 
-    public User getUserByEmail(String email) {
+    public UserEntity getUserByEmail(String email) {
         var userFound = userRepository.findByEmail(email);
-        if(userFound == null){
+        if (userFound == null) {
             throw new UserNotFoundException();
         }
 
         return userFound;
     }
 
-    public User createUser(CreateUserRequestDTO createUserRequestDto) {
-        var newUser = new User();
+    public UserEntity createUser(CreateUserRequestDTO createUserRequestDto) {
+        var newUser = new UserEntity();
         BeanUtils.copyProperties(createUserRequestDto, newUser);
         newUser.setEnabled(false);
 
@@ -92,7 +88,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User updateUser(UUID id, UpdateUserRequestDTO updateUserRequestDto) {
+    public UserEntity updateUser(UUID id, UpdateUserRequestDTO updateUserRequestDto) {
         var userToUpdate = getUserById(id);
 
         BeanUtils.copyProperties(updateUserRequestDto, userToUpdate);
@@ -105,7 +101,7 @@ public class UserService implements UserDetailsService {
         return userToUpdate;
     }
 
-    public User deleteUser(UUID id) {
+    public UserEntity deleteUser(UUID id) {
         var userToDelete = getUserById(id);
         userToDelete.setDeletedAt(Instant.now());
         userRepository.save(userToDelete);

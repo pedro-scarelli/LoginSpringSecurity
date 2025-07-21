@@ -3,7 +3,7 @@ package com.login.user.controller;
 import java.util.Map;
 import java.util.UUID;
 
-import com.login.user.domain.mapper.UserMapper;
+import com.login.user.domain.mapper.UserEntityMapper;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,6 @@ import com.login.user.domain.dto.response.*;
 import com.login.user.service.UserService;
 import com.login.user.util.ValidationUtils;
 
-import io.swagger.v3.oas.annotations.enums.*;
-import io.swagger.v3.oas.annotations.media.*;
-import io.swagger.v3.oas.annotations.responses.*;
-import io.swagger.v3.oas.annotations.security.*;
 import jakarta.validation.Valid;
 
 @AllArgsConstructor
@@ -30,7 +26,7 @@ public class UserController {
 
     private UserService userService;
 
-    private UserMapper userMapper;
+    private UserEntityMapper userMapper;
 
 
     @PostMapping(consumes = "application/json")

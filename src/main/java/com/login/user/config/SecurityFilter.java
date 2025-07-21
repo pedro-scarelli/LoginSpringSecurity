@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.login.user.domain.exception.UnauthorizedException;
-import com.login.user.domain.model.User;
+import com.login.user.domain.model.UserEntity;
 import com.login.user.repository.UserRepository;
 import com.login.user.service.TokenService;
 
@@ -52,7 +52,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ","").trim();
     }
 
-    public void isUserAuthenticated(User userToAuthenticate) {
+    public void isUserAuthenticated(UserEntity userToAuthenticate) {
         if (userToAuthenticate == null) {
             throw new UnauthorizedException();
         }

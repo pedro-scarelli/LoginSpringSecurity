@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.login.user.domain.dto.request.LoginRequestDTO;
 import com.login.user.domain.exception.*;
-import com.login.user.domain.model.User;
+import com.login.user.domain.model.UserEntity;
 
 @AllArgsConstructor
 @Service
@@ -25,7 +25,7 @@ public class AuthenticationService {
 
     private EmailService emailService;
 
-    public User authenticateLogin(LoginRequestDTO loginRequestDto){
+    public UserEntity authenticateLogin(LoginRequestDTO loginRequestDto){
         try {
             var user = userService.getUserByEmail(loginRequestDto.email());
             isUserActivated(user);
@@ -42,7 +42,7 @@ public class AuthenticationService {
         throw new UserNotFoundException();
     }
 
-    public void isUserActivated(User user) {
+    public void isUserActivated(UserEntity user) {
         if (!user.isEnabled()) {
             throw new UserNotActivatedException();
         }
@@ -75,7 +75,7 @@ public class AuthenticationService {
         userService.save(user);
     }
 
-    public void isRedefinePasswordAuthorized(User user, String incomingOtpCode) {
+    public void isRedefinePasswordAuthorized(UserEntity user, String incomingOtpCode) {
         var otpExpiry = user.getOtpTimestamp().plus(Duration.ofMinutes(5));
 
         if (isOtpCodeValid(user.getOtpCode(), incomingOtpCode, otpExpiry)) {
