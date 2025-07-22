@@ -18,9 +18,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "tb_user")
-public class UserEntity extends PersonEntity implements UserDetails{
+public class UserEntity extends PersonEntity implements UserDetails {
 
     @Id
     @Column(name = "pk_id")

@@ -40,19 +40,19 @@ public class AppointmentEntity {
     @Column(name = "dt_scheduled_date", nullable = false)
     private LocalDateTime scheduledDate;
 
-    @Column(name = "dc_estimated_duration_hours", precision = 4, scale = 2)
+    @Column(name = "dc_estimated_duration_hours")
     private Double estimatedDurationHours;
 
-    @Column(name = "dc_actual_duration_hours", precision = 4, scale = 2)
+    @Column(name = "dc_actual_duration_hours")
     private Double actualDurationHours;
 
     @Column(name = "st_service_description", nullable = false, columnDefinition = "TEXT")
     private String serviceDescription;
 
-    @Column(name = "dc_estimated_amount", precision = 10, scale = 2)
+    @Column(name = "dc_estimated_amount")
     private BigDecimal estimatedAmount;
 
-    @Column(name = "dc_final_amount", precision = 10, scale = 2)
+    @Column(name = "dc_final_amount")
     private BigDecimal finalAmount;
 
     @Enumerated(EnumType.STRING)

@@ -7,12 +7,14 @@ import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_address")
 @SQLRestriction("dt_deleted_at IS NULL")
 public class AddressEntity {
@@ -45,7 +47,7 @@ public class AddressEntity {
     private String zipCode;
 
     @Column(name = "st_country")
-    private String country = "Brazil";
+    private String country;
 
     @Column(name = "dt_deleted_at")
     private Instant deletedAt;

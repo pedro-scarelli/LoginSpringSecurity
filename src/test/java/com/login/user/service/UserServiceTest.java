@@ -1,4 +1,4 @@
-package com.login.user;
+package com.login.user.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -6,18 +6,17 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.login.user.domain.dto.request.CreateUserRequestDTO;
 import com.login.user.domain.exception.DuplicateCredentialsException;
 import com.login.user.domain.exception.UserNotFoundException;
 import com.login.user.repository.UserRepository;
-import com.login.user.service.UserService;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
@@ -25,11 +24,6 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void getUserByNonExistingIdShouldThrowUserNotFoundException() {
@@ -49,8 +43,9 @@ class UserServiceTest {
 
     @Test
     void registerDuplicatedUserCredentialsShouldThrowDuplicatedCredentialsException() {
-        var createUserDto = new CreateUserRequestDTO("John Doe", "john@example.com", "password");
-        when(userRepository.existsByEmail("john@example.com")).thenReturn(true);
+        var createUserDto = Mocks.createUserRequestDTO();
+
+        when(userRepository.existsByEmail(createUserDto.person().email())).thenReturn(true);
 
         assertThrows(DuplicateCredentialsException.class, () -> userService.createUser(createUserDto));
     }

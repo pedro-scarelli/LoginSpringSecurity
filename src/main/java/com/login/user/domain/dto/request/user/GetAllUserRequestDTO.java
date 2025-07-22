@@ -1,4 +1,4 @@
-package com.login.user.domain.dto.request;
+package com.login.user.domain.dto.request.user;
 
 import org.springframework.web.bind.annotation.RequestParam;
 

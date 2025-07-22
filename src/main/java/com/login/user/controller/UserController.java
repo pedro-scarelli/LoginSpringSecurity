@@ -3,16 +3,16 @@ package com.login.user.controller;
 import java.util.Map;
 import java.util.UUID;
 
-import com.login.user.domain.mapper.UserEntityMapper;
+import com.login.user.domain.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.login.user.domain.dto.request.*;
+import com.login.user.domain.dto.request.user.*;
+import com.login.user.domain.dto.response.user.*;
 import com.login.user.domain.dto.response.*;
 import com.login.user.service.UserService;
 import com.login.user.util.ValidationUtils;
@@ -26,7 +26,7 @@ public class UserController {
 
     private UserService userService;
 
-    private UserEntityMapper userMapper;
+    private UserMapper userMapper;
 
 
     @PostMapping(consumes = "application/json")
@@ -36,16 +36,10 @@ public class UserController {
         }
 
         var newUser = userService.createUser(createUserRequestDto);
-        var location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(newUser.getId())
-                    .toUri();
-        var message = Map.of("message", "Usuário criado com sucesso", "userId", newUser.getId());
+        var successResponse = new SuccessResponseDTO("Usuário criado com sucesso", Map.of("userId", newUser.getId()));
 
-        return ResponseEntity.created(location).body(message);
+        return ResponseEntity.created(null).body(successResponse);
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping()
@@ -76,10 +70,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<@NonNull Map<String, Object>> deleteUser(@PathVariable("id") UUID id) {
+    public ResponseEntity<@NonNull SuccessResponseDTO> deleteUser(@PathVariable("id") UUID id) {
         ValidationUtils.isTargetUserSameFromRequest(id);
         var deletedUser = userService.deleteUser(id);
-        Map<String, Object> message = Map.of("message", "Usuário deletado com sucesso", "userId", deletedUser.getId());
+        var message = new SuccessResponseDTO("Usuário deletado com sucesso", Map.of("userId", deletedUser.getId()));
 
         return ResponseEntity.ok().body(message);
     }

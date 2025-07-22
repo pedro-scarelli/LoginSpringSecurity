@@ -24,6 +24,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @PostConstruct
     private void init() {
         exceptionStatusMap.put(UserNotFoundException.class, HttpStatus.NOT_FOUND);
+        exceptionStatusMap.put(CompanyNotFoundException.class, HttpStatus.NOT_FOUND);
         exceptionStatusMap.put(DuplicateCredentialsException.class, HttpStatus.BAD_REQUEST);
         exceptionStatusMap.put(IncorrectCredentialsException.class, HttpStatus.BAD_REQUEST);
         exceptionStatusMap.put(UnauthorizedException.class, HttpStatus.UNAUTHORIZED);

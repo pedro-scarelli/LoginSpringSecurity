@@ -12,14 +12,13 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.login.user.domain.mapper.UserEntityMapper;
-import com.login.user.domain.dto.request.*;
-import com.login.user.domain.dto.response.UserPaginationResponseDTO;
+import com.login.user.domain.mapper.UserMapper;
+import com.login.user.domain.dto.request.user.CreateUserRequestDTO;
+import com.login.user.domain.dto.request.user.UpdateUserRequestDTO;
+import com.login.user.domain.dto.response.user.UserPaginationResponseDTO;
 import com.login.user.domain.exception.*;
 import com.login.user.domain.model.UserEntity;
-import com.login.user.domain.model.enums.UserRole;
 import com.login.user.repository.UserRepository;
-
 
 @AllArgsConstructor
 @Service
@@ -29,7 +28,10 @@ public class UserService implements UserDetailsService {
 
     private final EmailService emailService;
 
-    private final UserEntityMapper userMapper;
+    private final UserMapper userMapper;
+
+    private final AddressService addressService;
+
 
     public UserPaginationResponseDTO getAllUsers(int page, int items) {
         var users = userRepository.findAll(PageRequest.of(page - 1, items));
@@ -67,24 +69,30 @@ public class UserService implements UserDetailsService {
     }
 
     public UserEntity createUser(CreateUserRequestDTO createUserRequestDto) {
-        var newUser = new UserEntity();
-        BeanUtils.copyProperties(createUserRequestDto, newUser);
-        newUser.setEnabled(false);
-
-        isUserCredentialsDuplicated(newUser.getEmail());
+        isUserCredentialsDuplicated(createUserRequestDto.person().email(), createUserRequestDto.person().cpf());
+        var newUser = userMapper.toEntity(createUserRequestDto);
 
         var hashedPassword = new BCryptPasswordEncoder().encode(newUser.getPassword());
         newUser.setPassword(hashedPassword);
-        newUser.setRole(UserRole.USER);
+
+        addressService.save(newUser.getAddress());
         userRepository.save(newUser);
         emailService.sendSignUpEmail(newUser.getEmail(), newUser.getId());
 
         return newUser;
     }
 
-    public void isUserCredentialsDuplicated(String email) {
+    public void isUserCredentialsDuplicated(String email, String cpf) {
         if (userRepository.existsByEmail(email)) {
             throw new DuplicateCredentialsException();
+        }
+
+        userExistsByCpf(cpf);
+    }
+
+    public void userExistsByCpf(String cpf) {
+        if(userRepository.existsByCpf(cpf)){
+            throw new DuplicateCredentialsException("CPF já esta sendo utilizado");
         }
     }
 

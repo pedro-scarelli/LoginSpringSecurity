@@ -1,11 +1,8 @@
-CREATE TYPE person_type AS ENUM ('USER', 'CLIENT');
-CREATE TYPE appointment_status AS ENUM ('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED');
-
 CREATE TABLE tb_person (
     pk_id UUID PRIMARY KEY,
-    st_person_type person_type NOT NULL,
+    st_person_type VARCHAR(6) NOT NULL,
     st_name VARCHAR(255) NOT NULL,
-    st_cpf VARCHAR(11) NOT NULL,
+    st_cpf VARCHAR(11) NOT NULL UNIQUE,
     st_email VARCHAR(255),
     st_phone VARCHAR(20),
     fk_address_id UUID NOT NULL,
@@ -46,10 +43,12 @@ CREATE TABLE tb_company (
     
     fk_user_id UUID NOT NULL,
     
+    fk_address_id UUID NOT NULL,
     dt_created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     dt_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     dt_deleted_at TIMESTAMP WITH TIME ZONE,
     
+    CONSTRAINT fk_company_address FOREIGN KEY (fk_address_id) REFERENCES tb_address(pk_id) ON DELETE RESTRICT,
     CONSTRAINT ck_company_document CHECK (LENGTH(st_cnpj) = 14),
     CONSTRAINT ck_company_hourly_rate CHECK (dc_default_hourly_rate IS NULL OR dc_default_hourly_rate > 0)
 );
@@ -94,7 +93,7 @@ CREATE TABLE tb_appointment (
     dc_estimated_amount DECIMAL(10,2),
     dc_final_amount DECIMAL(10,2),
     
-    st_status appointment_status DEFAULT 'SCHEDULED',
+    st_status VARCHAR(11) DEFAULT 'SCHEDULED',
     st_notes TEXT,
     
     st_nfe_number VARCHAR(20),

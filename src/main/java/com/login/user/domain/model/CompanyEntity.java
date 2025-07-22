@@ -59,6 +59,10 @@ public class CompanyEntity {
     @Column(name = "dt_deleted_at")
     private Instant deletedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_address_id", nullable = false)
+    private AddressEntity address;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserEntity owner;

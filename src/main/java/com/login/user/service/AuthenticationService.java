@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.login.user.domain.dto.request.LoginRequestDTO;
+import com.login.user.domain.dto.request.auth.LoginRequestDTO;
 import com.login.user.domain.exception.*;
 import com.login.user.domain.model.UserEntity;
 

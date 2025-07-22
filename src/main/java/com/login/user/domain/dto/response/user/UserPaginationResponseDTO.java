@@ -1,4 +1,4 @@
-package com.login.user.domain.dto.response;
+package com.login.user.domain.dto.response.user;
 
 import java.util.List;
 

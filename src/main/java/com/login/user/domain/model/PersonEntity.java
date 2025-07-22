@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "tb_person")
-public class PersonEntity {
+public abstract class PersonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +28,7 @@ public class PersonEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "st_person_type", nullable = false)
+    @Column(name = "st_person_type", nullable = false, columnDefinition = "person_type")
     private PersonType personType;
 
     @Column(name = "st_cpf", nullable = false)

@@ -1,17 +1,17 @@
 services:
-  app:
-    image: "docker-spring-boot-postgres:latest"
-    build:
-      context: .
-    container_name: app
-    env_file:
-      - .env
-    environment:
-      - DB_HOST=database
-    ports:
-      - "8080:8080"
-    depends_on:
-      - database
+  # app:
+  #   image: "docker-spring-boot-postgres:latest"
+  #   build:
+  #     context: .
+  #   container_name: app
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - DB_HOST=database
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - database
 
   database:
     image: postgres:15
